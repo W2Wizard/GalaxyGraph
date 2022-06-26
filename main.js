@@ -40,8 +40,8 @@ canvas.addEventListener("mousemove", function (evt) {
 class Project {
 
 	draw = function () {
-		let xpos = this.x + canvas.height / 2;
-		let ypos = this.y + canvas.width / 2;
+		let xpos = this.x + canvas.width / 2;
+		let ypos = this.y + canvas.height / 2;
 
 		ctx.beginPath()
 		ctx.fillStyle = this.color
@@ -91,8 +91,22 @@ function getProjects() {
 function draw() {
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.scale(0.5, 0.5);
+	ctx.scale(0.6, 0.6);
 	ctx.font = "35px Arial";
+
+	// Insanely badly hardcoded
+	let xpos = 3000 + canvas.clientWidth / 2;
+	let ypos = 3000 + canvas.clientHeight / 2;
+
+	ctx.beginPath();
+	ctx.arc(xpos, ypos, 975, circle, false); // Rank 01
+	ctx.arc(xpos, ypos, 835, circle, false); // Rank 02
+	ctx.arc(xpos, ypos, 670, circle, false); // Rank 03
+	ctx.arc(xpos, ypos, 525, circle, false); // Rank 04
+	ctx.arc(xpos, ypos, 340, circle, false); // Rank 05
+	ctx.arc(xpos, ypos, 165, circle, false); // Rank 06
+	ctx.lineWidth = 10;
+	ctx.stroke();
 
 	const projects = getProjects();
 	for (const project of projects)
