@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/26 20:59:50 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/06/26 20:59:50 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/06/27 15:08:27 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ const canvas = document.getElementById('galaxy-graph')
 const ctx = canvas.getContext('2d');
 
 const circle = Math.PI * 2
+const translation = [0, 0]
 
 // Callbacks
 ///////////////////////////////////////////////////////////////////
@@ -23,15 +24,19 @@ const circle = Math.PI * 2
 window.addEventListener('resize', function () {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
-
-	draw();
 })
 
 canvas.addEventListener("mousedown", function (evt) {
+
 });
 
 
 canvas.addEventListener("mousemove", function (evt) {
+	// ctx.translate(evt.clientX, evt.clientY)
+	if (evt.ctrlKey) {
+		translation[0] = evt.pageX;
+		translation[1] = evt.pageY;
+	}
 });
 
 // Types
@@ -40,8 +45,8 @@ canvas.addEventListener("mousemove", function (evt) {
 class Project {
 
 	draw = function () {
-		let xpos = this.x + canvas.width / 2;
-		let ypos = this.y + canvas.height / 2;
+		let xpos = ((this.x - 3000) + canvas.width / 2) + translation[0];
+		let ypos = ((this.y - 3000) + canvas.height / 2) + translation[1];
 
 		ctx.beginPath()
 		ctx.fillStyle = this.color
@@ -78,6 +83,9 @@ class Project {
 	}
 }
 
+///////////////////////////////////////////////////////////////////
+
+
 function getProjects() {
 	let projects = [];
 
@@ -90,27 +98,15 @@ function getProjects() {
 
 function draw() {
 
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.scale(0.6, 0.6);
+	ctx.beginPath()
+	ctx.fillStyle = "#fff"
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.font = "35px Arial";
-
-	// Insanely badly hardcoded
-	let xpos = 3000 + canvas.clientWidth / 2;
-	let ypos = 3000 + canvas.clientHeight / 2;
-
-	ctx.beginPath();
-	ctx.arc(xpos, ypos, 975, circle, false); // Rank 01
-	ctx.arc(xpos, ypos, 835, circle, false); // Rank 02
-	ctx.arc(xpos, ypos, 670, circle, false); // Rank 03
-	ctx.arc(xpos, ypos, 525, circle, false); // Rank 04
-	ctx.arc(xpos, ypos, 340, circle, false); // Rank 05
-	ctx.arc(xpos, ypos, 165, circle, false); // Rank 06
-	ctx.lineWidth = 10;
-	ctx.stroke();
 
 	const projects = getProjects();
 	for (const project of projects)
 		project.draw();
+	requestAnimationFrame(draw);
 }
 
 // Entry
