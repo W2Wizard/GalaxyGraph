@@ -12,11 +12,13 @@
 
 // Constants
 
-const canvas = document.getElementById('galaxy-graph')
+const canvas = document.getElementById('galaxy-graph');
 const ctx = canvas.getContext('2d');
 
 const circle = Math.PI * 2
 const translation = [0, 0]
+
+let mousedown = false;
 
 // Callbacks
 ///////////////////////////////////////////////////////////////////
@@ -27,15 +29,18 @@ window.addEventListener('resize', function () {
 })
 
 canvas.addEventListener("mousedown", function (evt) {
-
+	mousedown = true;
 });
 
+canvas.addEventListener("mouseup", function (evt) {
+	mousedown = false;
+});
 
 canvas.addEventListener("mousemove", function (evt) {
 	// ctx.translate(evt.clientX, evt.clientY)
-	if (evt.ctrlKey) {
-		translation[0] = evt.pageX;
-		translation[1] = evt.pageY;
+	if (mousedown) {
+		translation[0] += evt.movementX * 2;
+		translation[1] += evt.movementY * 2;
 	}
 });
 
@@ -98,9 +103,13 @@ function getProjects() {
 
 function draw() {
 
+	ctx.clearRect(0,0,canvas.width,canvas.height);
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	ctx.scale(0.42, 0.42)
+
 	ctx.beginPath()
 	ctx.fillStyle = "#fff"
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.font = "35px Arial";
 
 	const projects = getProjects();
@@ -116,8 +125,6 @@ function makeGraph() {
 
 
 	// Set canvas size
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
 
 	requestAnimationFrame(draw);
 }
