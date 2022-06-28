@@ -18,29 +18,42 @@ const ctx = canvas.getContext('2d');
 const circle = Math.PI * 2
 const translation = [0, 0]
 
-let mousedown = false;
+let mouseDown = false;
+let mouseZoom = 1;
+const zoomOutMax = 0.2;
+const zoomInMax = 1.5;
 
 // Callbacks
 ///////////////////////////////////////////////////////////////////
 
-window.addEventListener('resize', function () {
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-})
+canvas.onwheel = function(evt) {
+	evt.preventDefault();
+
+	// TODO: Zoom onto mouse position
+
+	mouseZoom += evt.deltaY * -0.001; // Sensitivity
+	console.info(mouseZoom)
+	mouseZoom = Math.min(Math.max(zoomOutMax, mouseZoom), zoomInMax);
+}
 
 canvas.addEventListener("mousedown", function (evt) {
-	mousedown = true;
+	mouseDown = true;
+});
+
+canvas.addEventListener("mousedown", function (evt) {
+	mouseDown = true;
 });
 
 canvas.addEventListener("mouseup", function (evt) {
-	mousedown = false;
+	mouseDown = false;
 });
 
 canvas.addEventListener("mousemove", function (evt) {
 	// ctx.translate(evt.clientX, evt.clientY)
-	if (mousedown) {
-		translation[0] += evt.movementX * 2;
-		translation[1] += evt.movementY * 2;
+	if (mouseDown) {
+		// Normalize mouse speed depending on zoom.
+		translation[0] += evt.movementX * (1 / mouseZoom);
+		translation[1] += evt.movementY * (1 / mouseZoom);
 	}
 });
 
@@ -106,7 +119,7 @@ function draw() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
-	ctx.scale(0.42, 0.42)
+	ctx.scale(mouseZoom, mouseZoom)
 
 	ctx.beginPath()
 	ctx.fillStyle = "#fff"
