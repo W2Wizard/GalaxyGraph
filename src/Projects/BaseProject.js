@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   Project.js                                         :+:    :+:            */
+/*   BaseProject.js                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/28 23:40:37 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/06/28 23:40:37 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/06/29 17:26:37 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ import {GraphColors} from '../Constants.js';
  * Finally a text color for the inner text within the object.
  */
 export const ProjectState = {
-	Done:			{ state: "done", primaryColor: GraphColors.Cyan, secondaryColor: GraphColors.Cyan, textColor: GraphColors.White },
-	InProgress:		{ state: "in_progress", primaryColor: GraphColors.Gray, secondaryColor: GraphColors.Cyan, textColor: GraphColors.Cyan },
-	Available:		{ state: "available", primaryColor: GraphColors.Gray, secondaryColor: GraphColors.White, textColor: GraphColors.White },
-	Unavailable:	{ state: "unavailable", primaryColor: GraphColors.Gray, secondaryColor: GraphColors.LightGray, textColor: GraphColors.Gray },
-	NotRecommended:	{ state: "not_recommended", primaryColor: GraphColors.Gray, secondaryColor: GraphColors.Orange, textColor: GraphColors.Orange },
-	Fail:			{ state: "fail", primaryColor: GraphColors.Red, secondaryColor: GraphColors.Red, textColor: GraphColors.White },
+	"done":				{ primaryColor: GraphColors.Cyan, secondaryColor: GraphColors.Cyan, textColor: GraphColors.White },
+	"in_progress":		{ primaryColor: GraphColors.Gray, secondaryColor: GraphColors.Cyan, textColor: GraphColors.Cyan },
+	"available":		{ primaryColor: GraphColors.Gray, secondaryColor: GraphColors.White, textColor: GraphColors.White },
+	"unavailable":		{ primaryColor: GraphColors.Gray, secondaryColor: GraphColors.LightGray, textColor: GraphColors.Gray },
+	"not_recommended":	{ primaryColor: GraphColors.Gray, secondaryColor: GraphColors.Orange, textColor: GraphColors.Orange },
+	"fail":				{ primaryColor: GraphColors.Red, secondaryColor: GraphColors.Red, textColor: GraphColors.White },
 };
 
 /**
@@ -42,7 +42,7 @@ export const ProjectType = {
 
 	// Special projects
 	ModuleBig:		30, // A big module e.g: Final module.
-	ModuleSmall:	20, // A big module e.g: Final module.
+	ModuleSmall:	20, // A small module
 };
 
 /**
