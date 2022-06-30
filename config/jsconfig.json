@@ -1,5 +1,7 @@
 {
-	"typeAcquisition": {
-		"include": ["chrome"]
-	}
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es6",
+		"checkJs": true
+	},
 }

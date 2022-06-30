@@ -6,7 +6,7 @@
 /*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/29 12:56:35 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/06/30 11:14:51 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/06/30 17:57:10 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ class Project {
 		ctx.font = `normal bold ${this.radius}px Arial`;
 		ctx.fillStyle = "#6F7278"
 		ctx.textAlign = 'center';
-		// NOTE: 
 		ctx.fillText(this.name, xpos, ypos + this.radius / foregroundScale);
 		ctx.fill();
 	};
@@ -62,7 +61,7 @@ class Project {
 		// Determine size of project based on kind.
 		switch (kind) {
 			case "big_project":
-				this.radius = 23;
+				this.radius = 25;
 				break;
 			case "exam":
 				this.radius = 15;
@@ -91,6 +90,7 @@ class Project {
 
 const canvas = document.getElementById('galaxy-graph');
 const ctx = canvas.getContext('2d');
+const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height'));
 
 const circle = Math.PI * 2
 const camOffset = [0, 0]
@@ -103,7 +103,7 @@ let mouseZoom = 1;
 // n > 0: ZoomIn && n < 0: Zoom out
 const zoomMax = 0.5;
 const zoomMin = 3.5;
-const mouseSpeed = 1.5;
+const mouseSpeed = 1;
 
 // Misc Functions TODO: Move these!
 ///////////////////////////////////////////////////////////////////
@@ -172,8 +172,8 @@ function draw() {
 
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	canvas.width = 2 * (window.innerWidth - 16);
+	canvas.height = 2 * (window.innerHeight - headerHeight - 16);
 	ctx.scale(mouseZoom, mouseZoom);
 	ctx.fillStyle = "#fff"
 
@@ -205,6 +205,11 @@ function draw() {
 	ctx.beginPath();
 	ctx.arc(camOffset[0] + canvas.width / 2, camOffset[1] + canvas.height / 2, 200, 0, circle, false);
 	ctx.stroke();
+
+    ctx.strokeStyle = "#6F7278";
+    ctx.lineWidth = 5;
+
+    // draw a red line
 
 	// Draw the projects
 	for (const project of projects)
