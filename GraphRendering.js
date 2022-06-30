@@ -6,27 +6,54 @@
 /*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/29 12:56:35 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/06/29 13:28:18 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/06/30 11:14:51 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Types
 ////////////////////////////////////////////////////////////////////////////////
 
-// TODO: TEMP, move this to different file! 
+// TODO: TEMP, move this to different file! Just a scratch pad
 class Project {
 
 	draw = function () {
-		let xpos = ((this.x - 3000)) + translation[0];
-		let ypos = ((this.y - 3000)) + translation[1];
 
+		const backgroundScale = 3;
+		const foregroundScale = backgroundScale - 0.2;
+
+		// Hard coded 3000 Because libft is the 'center'
+		let xpos = (((this.x - 3000)) + camOffset[0]) + (canvas.width / 2);
+		let ypos = (((this.y - 3000)) + camOffset[1]) + (canvas.height / 2);
+
+		// Background
 		ctx.beginPath()
-		ctx.fillStyle = this.color
-		ctx.fillText(this.name, xpos, ypos - this.radius * 4);
-		ctx.arc(xpos, ypos, this.radius * 3, circle, false)
-		ctx.fill()
+		ctx.fillStyle = "#6F7278"
+		ctx.arc(xpos, ypos, this.radius * backgroundScale, circle, false);
+		ctx.fill();
+
+		// Foreground
+		ctx.beginPath()
+		ctx.fillStyle = "#46484C"
+		ctx.arc(xpos, ypos, this.radius * foregroundScale, circle, false);
+		ctx.fill();
+
+		// Name
+		ctx.beginPath()
+		// TODO: Scale the text based on its length and sphere radius
+		ctx.font = `normal bold ${this.radius}px Arial`;
+		ctx.fillStyle = "#6F7278"
+		ctx.textAlign = 'center';
+		// NOTE: 
+		ctx.fillText(this.name, xpos, ypos + this.radius / foregroundScale);
+		ctx.fill();
 	};
 
+	/**
+	 *@param {number} x - Project X loc.
+	 *@param {number} y - Project Y loc.
+	 *@param {string} kind - Project Type.
+	 *@param {string} name - The title of the book.
+	 */
 	constructor(x, y, kind, name) {
 		this.x = x
 		this.y = y
@@ -35,21 +62,25 @@ class Project {
 		// Determine size of project based on kind.
 		switch (kind) {
 			case "big_project":
-				this.radius = 20;
-				this.color = '#7f8c8d'
+				this.radius = 23;
 				break;
 			case "exam":
 				this.radius = 15;
-				this.color = '#ffa085'
 				break;
 			case "piscine":
-				this.radius = 10;
-				this.color = '#16a085'
+				this.radius = 15;
 				break;
 			default:
-				this.radius = 10;
-				this.color = '#bdc3c7'
+				this.radius = 18;
 				break;
+		}
+
+		// Patch file...
+		if (this.name.startsWith("CPP")) {
+			this.radius = 10;
+		}
+		if (this.name.endsWith("08")) {
+			this.radius = 15;
 		}
 
 	}
@@ -62,7 +93,7 @@ const canvas = document.getElementById('galaxy-graph');
 const ctx = canvas.getContext('2d');
 
 const circle = Math.PI * 2
-const translation = [0, 0]
+const camOffset = [0, 0]
 
 const projects = getProjects();
 
@@ -70,8 +101,8 @@ let mouseDown = false;
 let mouseZoom = 1;
 
 // n > 0: ZoomIn && n < 0: Zoom out
-const zoomMax = 0.2;
-const zoomMin = 1.5;
+const zoomMax = 0.5;
+const zoomMin = 3.5;
 const mouseSpeed = 1.5;
 
 // Misc Functions TODO: Move these!
@@ -109,12 +140,18 @@ canvas.addEventListener("mouseup", function (evt) {
 	mouseDown = false;
 });
 
+canvas.addEventListener("touchstart", (evt) => {
+	// ctx.translate(evt.clientX, evt.clientY)
+	camOffset[0] = -((evt.touches[0].clientX * (1 / mouseZoom)) * mouseSpeed);
+	camOffset[1] = -((evt.touches[0].clientY * (1 / mouseZoom)) * mouseSpeed);
+});
+
 canvas.addEventListener("mousemove", (evt) => {
 	// ctx.translate(evt.clientX, evt.clientY)
 	if (mouseDown) {
 		// Normalize mouse speed depending on zoom.
-		translation[0] += (evt.movementX * (1 / mouseZoom)) * mouseSpeed;
-		translation[1] += (evt.movementY * (1 / mouseZoom)) * mouseSpeed;
+		camOffset[0] += ((evt.movementX * (1 / mouseZoom)) * mouseSpeed);
+		camOffset[1] += ((evt.movementY * (1 / mouseZoom)) * mouseSpeed);
 	}
 });
 
@@ -138,32 +175,35 @@ function draw() {
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 	ctx.scale(mouseZoom, mouseZoom);
-
 	ctx.fillStyle = "#fff"
-	ctx.font = "35px Arial";
 
 	// Draw circles
-	ctx.lineWidth = 10;
+	ctx.lineWidth = 5;
 	ctx.strokeStyle = '#6F7278';
 
+	// Rank 1 (2)
 	ctx.beginPath();
-	ctx.arc(translation[0], translation[1], 1000, 0, circle, false);
+	ctx.arc(camOffset[0] + canvas.width / 2, camOffset[1] + canvas.height / 2, 1000, 0, circle, false);
 	ctx.stroke();
 
+	// Rank 2 (3)
 	ctx.beginPath();
-	ctx.arc(translation[0], translation[1], 800, 0, circle, false);
+	ctx.arc(camOffset[0] + canvas.width / 2, camOffset[1] + canvas.height / 2, 800, 0, circle, false);
 	ctx.stroke();
 
+	// Rank 3 (4)
 	ctx.beginPath();
-	ctx.arc(translation[0], translation[1], 600, 0, circle, false);
+	ctx.arc(camOffset[0] + canvas.width / 2, camOffset[1] + canvas.height / 2, 600, 0, circle, false);
 	ctx.stroke();
 
+	// Rank 4 (5)
 	ctx.beginPath();
-	ctx.arc(translation[0], translation[1], 400, 0, circle, false);
+	ctx.arc(camOffset[0] + canvas.width / 2, camOffset[1] + canvas.height / 2, 400, 0, circle, false);
 	ctx.stroke();
 
+	// Rank 5 (6)
 	ctx.beginPath();
-	ctx.arc(translation[0], translation[1], 200, 0, circle, false);
+	ctx.arc(camOffset[0] + canvas.width / 2, camOffset[1] + canvas.height / 2, 200, 0, circle, false);
 	ctx.stroke();
 
 	// Draw the projects
