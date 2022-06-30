@@ -6,7 +6,7 @@
 /*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/30 17:18:17 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/06/30 20:40:39 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/06/30 21:03:05 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ header {
 
 #galaxy-graph {
 	width: 100%;
-	image-rendering: pixelated;
 	display: block;
 	border-radius: 8px;
 	background: radial-gradient(circle at center, #003144 25%, #090a0f 100%);
@@ -102,6 +101,28 @@ header {
 	min-width: 160px;
 	list-style-type: none;
 	padding: 0.1em;
+	z-index: 2;
+	border-radius: 8px;
+}
+
+.dropdown-content a {
+	display: block;
+	color: #ecf0f1;
+	text-decoration: none;
+	padding: 8px 6px;
+	transition: 0.1s;
+	border-radius: 6px;
+	margin: 2px;
+}
+
+.dropdown-content a:hover,
+.dropdown-content a:focus {
+	background-color: #00ABAC;
+	transition: 0.04s;
+}
+
+.dropdown-content a:last-child {
+	margin-bottom: 0px;
 }
 
 .dropdown:hover .dropdown-content {

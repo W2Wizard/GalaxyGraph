@@ -6,35 +6,51 @@
 /*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/29 12:56:35 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/06/30 17:57:10 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/06/30 21:29:21 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Types
 ////////////////////////////////////////////////////////////////////////////////
 
+// Hard coded 3000 Because libft is the 'center'
+function translateTheShit(x, y) {
+	return [ (((x - 3000)) + camOffset[0]) + (canvas.width / 2), (((y - 3000)) + camOffset[1]) + (canvas.height / 2) ]
+}
+
 // TODO: TEMP, move this to different file! Just a scratch pad
 class Project {
+
+	drawlines = function() {
+		for (let line of this.lines) {
+			if (line.points.length == 2) {
+				const from = translateTheShit(line.points[0][0], line.points[0][1])
+				const to = translateTheShit(line.points[1][0], line.points[1][1])
+				ctx.beginPath();
+				ctx.lineCap = "square";	
+				ctx.moveTo(from[0], from[1]);
+				ctx.lineTo(to[0], to[1]);
+				ctx.stroke();
+			}
+		}
+	};
 
 	draw = function () {
 
 		const backgroundScale = 3;
 		const foregroundScale = backgroundScale - 0.2;
-
-		// Hard coded 3000 Because libft is the 'center'
-		let xpos = (((this.x - 3000)) + camOffset[0]) + (canvas.width / 2);
-		let ypos = (((this.y - 3000)) + camOffset[1]) + (canvas.height / 2);
+		const pos = translateTheShit(this.x, this.y)
 
 		// Background
 		ctx.beginPath()
 		ctx.fillStyle = "#6F7278"
-		ctx.arc(xpos, ypos, this.radius * backgroundScale, circle, false);
+		ctx.arc(pos[0], pos[1], this.radius * backgroundScale, circle, false);
 		ctx.fill();
 
 		// Foreground
 		ctx.beginPath()
 		ctx.fillStyle = "#46484C"
-		ctx.arc(xpos, ypos, this.radius * foregroundScale, circle, false);
+		ctx.arc(pos[0], pos[1], this.radius * foregroundScale, circle, false);
 		ctx.fill();
 
 		// Name
@@ -43,7 +59,7 @@ class Project {
 		ctx.font = `normal bold ${this.radius}px Arial`;
 		ctx.fillStyle = "#6F7278"
 		ctx.textAlign = 'center';
-		ctx.fillText(this.name, xpos, ypos + this.radius / foregroundScale);
+		ctx.fillText(this.name, pos[0], pos[1] + this.radius / foregroundScale);
 		ctx.fill();
 	};
 
@@ -53,13 +69,15 @@ class Project {
 	 *@param {string} kind - Project Type.
 	 *@param {string} name - The title of the book.
 	 */
-	constructor(x, y, kind, name) {
-		this.x = x
-		this.y = y
-		this.name = name
+	constructor(project) {
+		this.x = project.x
+		this.y = project.y
+		this.name =  project.name
+		this.kind = project.kind
+		this.lines = project.by
 
 		// Determine size of project based on kind.
-		switch (kind) {
+		switch (this.kind) {
 			case "big_project":
 				this.radius = 25;
 				break;
@@ -162,7 +180,7 @@ function getProjects() {
 	let projects = [];
 
 	data.forEach(function (element) {
-		projects.push(new Project(element.x, element.y, element.kind, element.name));
+		projects.push(new Project(element));
 	});
 
 	return projects;
@@ -212,6 +230,8 @@ function draw() {
     // draw a red line
 
 	// Draw the projects
+	for (const project of projects)
+		project.drawlines();
 	for (const project of projects)
 		project.draw();
 	requestAnimationFrame(draw);
