@@ -4,13 +4,47 @@
 <head>
 	<meta charset='utf-8'>
 	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-	<title>Galaxy</title>
+	<title>Galaxy Editor</title>
 	<meta name='viewport' content='width=device-width, initial-scale=1'>
 	<link rel='stylesheet' type='text/css' media='screen' href='./style/main.css'>
 </head>
 
-<body onload="renderGraph()">
-	<canvas id="galaxy-graph"></canvas>
+<body>
+	<header>
+
+		<!-- Toolbar -->
+		<div class="stack-left">
+			<!-- Project Search -->
+			<label class="stack-label" for="graph-search">Search:</label>
+			<input id="graph-search" class="stack-element" type="text" name="project-search" placeholder="Search ...">
+
+			<!-- Cursus selection -->
+			<label class="stack-label" for="graph-cursus-select">Cursus:</label>
+			<select id="graph-cursus-select" class="stack-element" name="cursus">
+				<option value="21">42cursus</option>
+				<option value="9">C Piscine</option>
+			</select>
+		</div>
+
+		<!-- Settings -->
+		<div class="stack-right dropdown">
+			<img id="profile-pic" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/PigExtensive1.jpg/822px-PigExtensive1.jpg?20060903094429">
+			<ul class="dropdown-content" role="menu">
+				<li>
+					<a href="https://example.com"> Settings </a>
+				</li>
+				<li>
+					<a href="https://example.com"> Logout </a>
+				</li>
+			</ul>
+		</div>
+
+	</header>
+
+	<main>
+		<canvas id="galaxy-graph"></canvas>
+	</main>
+
 </body>
 <script src='./temp/data.js'></script>
 <script src='./GraphRendering.js'></script>

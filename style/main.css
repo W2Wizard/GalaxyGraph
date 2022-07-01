@@ -1,5 +1,132 @@
-#galaxy-graph {
-	height: 100%;
-    width: 100%; 
-	background: radial-gradient(circle at center, #002534 50%, #090a0f 100%);
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   main.css                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/06/30 17:18:17 by lde-la-h      #+#    #+#                 */
+/*   Updated: 2022/06/30 21:03:05 by lde-la-h      ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
+:root {
+	--header-height: 50px;
 }
+
+body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background: #2a2a36;
+	min-width: 600px;
+	margin: 8px;
+}
+
+header {
+	height: var(--header-height);
+}
+
+#galaxy-graph {
+	width: 100%;
+	display: block;
+	border-radius: 8px;
+	background: radial-gradient(circle at center, #003144 25%, #090a0f 100%);
+	background-size: cover;
+	background-attachment: fixed;
+	position: relative;
+}
+
+/******************************************************************************/
+
+/* Header */
+
+/* Div container element that stacks items from the left */
+.stack-left {
+	display: inline-flex;
+	justify-content: left;
+	flex-wrap: wrap;
+	float: left;
+}
+
+.stack-right {
+	display: inline-flex;
+	justify-content: right;
+	flex-wrap: wrap;
+	float: right;
+}
+
+/* Element for a stack */
+.stack-element {
+	padding: 0.4rem;
+	margin: 8px 4px;
+	display: inline-block;
+	border-radius: 4px;
+	color: #ecf0f1;
+	border: solid rgba(255, 255, 255, 0.1) 1px;
+	background: #2a2a36;
+	cursor: pointer;
+	transition: transform 0.2s;
+}
+
+#profile-pic {
+	width: calc(var(--header-height) - 8px);
+	height: calc(var(--header-height) - 8px);
+	border-radius: 50px;
+	cursor: pointer;
+	object-fit: cover;
+}
+
+/* Label for a stack element */
+.stack-label {
+	margin: 8px 4px;
+	display: inline-block;
+	color: #ecf0f1;
+	background: #2a2a36;
+	align-self: center;
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	top: 24px;
+	right: 1px;
+	background-color: #2a2a36;
+	color: #ecf0f1;
+	text-align: center;
+	border: solid rgba(255, 255, 255, 0.1) 1px;
+	min-width: 160px;
+	list-style-type: none;
+	padding: 0.1em;
+	z-index: 2;
+	border-radius: 8px;
+}
+
+.dropdown-content a {
+	display: block;
+	color: #ecf0f1;
+	text-decoration: none;
+	padding: 8px 6px;
+	transition: 0.1s;
+	border-radius: 6px;
+	margin: 2px;
+}
+
+.dropdown-content a:hover,
+.dropdown-content a:focus {
+	background-color: #00ABAC;
+	transition: 0.04s;
+}
+
+.dropdown-content a:last-child {
+	margin-bottom: 0px;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+/* Main */
