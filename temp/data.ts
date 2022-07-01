@@ -1,4 +1,4 @@
-const data = [
+export const data = [
 	{
 		"state": "unavailable",
 		"final_mark": null,

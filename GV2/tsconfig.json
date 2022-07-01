@@ -1,0 +1,36 @@
+// Visit https://aka.ms/tsconfig.json to read more about this file
+{
+	"compilerOptions": {
+		"module": "ESNext",
+		"target": "ESNext",
+		"allowJs": true,
+		// "checkJs": true,
+		"outDir": "./build/",
+		"rootDir": "./src/",
+		"removeComments": false,
+		"downlevelIteration": false,
+		// "strict": true,
+		// "noImplicitAny": true,
+		"strictNullChecks": false,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": false,
+		"noImplicitThis": true,
+		"alwaysStrict": true,
+		"noUnusedLocals": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"esModuleInterop": true,
+		"preserveSymlinks": true,
+		"skipLibCheck": true,
+		// "sourceMap": true, //debugger
+		"forceConsistentCasingInFileNames": true
+		
+	},
+	"exclude": [
+		"node_modules/",
+	],
+	"include": ["src/"]
+}

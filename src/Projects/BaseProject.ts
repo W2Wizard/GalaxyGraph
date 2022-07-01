@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   BaseProject.js                                     :+:    :+:            */
+/*   BaseProject.ts                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/28 23:40:37 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/06/29 17:26:37 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/06/30 14:26:15 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,25 +46,45 @@ export const ProjectType = {
 };
 
 /**
+ * 
+ */
+interface Lines {
+	parent_id: number;
+	points: number[][];
+}
+
+/**
+ * A Intra V2 Project model.
+ */
+interface ProjectData {
+	state: string;
+	final_mark?: number;
+	id: number;
+	kind: string;
+	name: string;
+	x: number;
+	y: number;
+	by: Lines[];
+	project_id: number;
+	difficulty: number;
+	duration: string;
+	rules: string;
+	description: string;
+	slug: string;
+}
+/**
  * Abstract class for a simple project
  * 
  * @abstract
  */
 export class BaseProject {
 
-	/**
-	 * Constructor for a project
-	 * @constructor
-	 * @param {number} x - The X position of the project.
-	 * @param {number} y - The Y position of the project.
-	 * @param {string} name - The display name of the project.
-	 * @param {ProjectState} name - The current project state.
-	 */
-	constructor(x, y, name, state) {
-		this.x = x;
-		this.y = y;
-		this.name = name;
-		this.state = state;
+	// Variables
+	data: ProjectData;
+
+	// Constructor
+	constructor(project: string) {
+		this.data = JSON.parse(project)
 	};
 
 	/**

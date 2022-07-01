@@ -1,0 +1,23 @@
+{
+  "name": "galaxygraph",
+  "version": "1.0.0",
+  "description": "Bootleg graph",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"build": "./node_modules/typescript/bin/tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/W2Wizard/GalaxyGraph.git"
+  },
+  "author": "W2Wizard",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/W2Wizard/GalaxyGraph/issues"
+  },
+  "homepage": "https://github.com/W2Wizard/GalaxyGraph#readme",
+  "dependencies": {
+    "typescript": "^4.7.4"
+  }
+}
