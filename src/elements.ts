@@ -161,13 +161,12 @@ class Line extends Element2D {
 	}
 
 	override draw(): void {
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = Colors.Orange;
 		ctx.beginPath();
-			ctx.lineCap = "square";
-			ctx.strokeStyle = this.color;
-			ctx.lineWidth = this.thickness;
-			this.path.moveTo(this.pos[0], this.pos[1]);
-			this.path.lineTo(this.target[0], this.target[1]);
-		ctx.closePath();
+		this.path.moveTo(this.pos[0], this.pos[1]);
+		this.path.lineTo(this.target[0], this.target[1]);
+		this.path.closePath()
 		ctx.stroke(this.path);
 	}
 

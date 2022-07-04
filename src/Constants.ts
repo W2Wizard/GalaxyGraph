@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   Constants.js                                       :+:    :+:            */
+/*   Constants.ts                                       :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
+/*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/06/29 00:56:32 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/06/29 00:56:32 by W2Wizard      ########   odam.nl         */
+/*   Created: 2022/07/04 15:31:40 by lde-la-h      #+#    #+#                 */
+/*   Updated: 2022/07/04 15:35:26 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-// Colors
-export const GraphColors = {
+const Colors = {
 	White:		"#ffffff",
 	Red:		"#CC6256",
 	Cyan:		"#00BABC",
@@ -19,4 +18,3 @@ export const GraphColors = {
 	LightGray:	"#6F7278",
 	Orange:		"#FFA300",
 };
-

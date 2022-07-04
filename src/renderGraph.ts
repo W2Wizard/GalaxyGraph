@@ -110,17 +110,16 @@ function draw() {
 	requestAnimationFrame(draw);
 	
 	// Some upscaling
-	canvas.width = 1.42 * (window.innerWidth - 16);
-	canvas.height = 1.42 * (window.innerHeight - headerHeight - 16);
-	
-	ctx.scale(mouseZoom, mouseZoom);
-	ctx.fillStyle = "#fff"
+	canvas.width = 1 * (window.innerWidth - 16);
+	canvas.height = 1 * (window.innerHeight - headerHeight - 16);
 	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	ctx.scale(mouseZoom, mouseZoom);
+	
 	
 	// Draw circles
+	ctx.save()
 	ctx.lineWidth = 5;
-	ctx.strokeStyle = '#6F7278';
-	
+	ctx.strokeStyle = Colors.LightGray;
 	const pos = translatePos(0, 0, 0);
 	
 	// Q: What are these values ???
@@ -160,17 +159,11 @@ function draw() {
 	ctx.arc(pos[0], pos[1], 995, circle, 0);
 	ctx.stroke();
 	ctx.closePath();
-	
-	ctx.strokeStyle = "#6F7278";
-	ctx.lineWidth = 5;
+	ctx.restore();
 	
 	// Draw the lines
 	for (const project of projects)
 		project.drawlines();
-	
-	// Draw the projects
-	for (const project of projects)
-		project.draw();
 }
 
 function renderGraph() {
@@ -204,9 +197,8 @@ function renderGraph() {
 		}
 
 		// HACK: Since IntraAPI V2 does not specifiy this kind.
-		if (element.name.toLowerCase().includes("module")) {
+		if (element.name.toLowerCase().includes("module"))
 			newProject = new Module(element);
-		}
 		
 		projects.push(newProject);
 	});

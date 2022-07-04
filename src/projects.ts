@@ -66,17 +66,18 @@ class Project {
 	data: ProjectData;
 	element: Element2D;
 	lines: Line[] = [];
+	path: Path2D;
 
 	constructor(rawProjectData: ProjectData) {
 		this.data = rawProjectData;
 		this.size = ProjectSizes.Project;
 
+		this.path = new Path2D();
+
 		for (let i = 0; i < this.data.by.length; i++) {
 			const lineDraw = this.data.by[i];
-
 			this.lines.push(new Line(lineDraw.points[0], lineDraw.points[1], 5, Colors.LightGray));
 		}
-		console.log("Added a:", this.lines.length, "lines!");
 	}
 
 	/**
@@ -85,12 +86,21 @@ class Project {
 	drawlines(): void {
 		for (let i = 0; i < this.lines.length; i++) {
 			const line = this.lines[i];
-			line.pos = translatePos(line.pos[0][0], line.pos[0][1]);
-			line.target = translatePos(line.target[1][0], line.target[1][1]);
 
-			//line.draw();
-			//console.log("draw!")
+			const from = translatePos(line.pos[0], line.pos[1]);
+			const to = translatePos(line.target[0], line.target[1]);
+
+			ctx.lineWidth = 2;
+			ctx.strokeStyle = Colors.Orange;
+			ctx.beginPath();
+			this.path.moveTo(from[0], from[1]);
+			this.path.lineTo(to[0], to[1]);
+			ctx.closePath()
+			ctx.stroke(this.path);
 		}
+
+		/*
+		*/
 	}
 
 	/**
@@ -107,7 +117,6 @@ class Project {
 			ctx.arc(pos[0], pos[1], this.size * backgroundScale, Math.PI * 2, 0);
 			ctx.fill();
 		ctx.closePath();
-
 
 		// Foreground
 		ctx.beginPath()
