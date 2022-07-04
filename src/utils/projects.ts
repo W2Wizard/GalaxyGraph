@@ -16,9 +16,8 @@
 class Project {
 
 	size: number;
-	data: ProjectData;
 	lines: any[] = [];
-
+	data: ProjectData;
 
 	constructor(rawProjectData: ProjectData) {
 		this.data = rawProjectData;
@@ -41,14 +40,14 @@ class Project {
 			const to = translatePos(line.target[0], line.target[1]);
 
 			ctx.save();
-				ctx.lineWidth = 7;
-				ctx.strokeStyle = line.color;
-				ctx.lineCap = "square";
-				ctx.beginPath();
+			ctx.lineWidth = 7;
+			ctx.strokeStyle = line.color;
+			ctx.lineCap = "square";
+			ctx.beginPath();
 				ctx.moveTo(from[0], from[1]);
 				ctx.lineTo(to[0], to[1]);
-				ctx.closePath()
-				ctx.stroke();
+			ctx.closePath()
+			ctx.stroke();
 			ctx.restore();
 		}
 	}
@@ -86,6 +85,12 @@ class Project {
 			ctx.fill();
 		ctx.closePath();
 	}
+
+	intersects(x: number, y: number): boolean {
+		const pos = translatePos(this.data.x, this.data.y);
+
+		return (isInsideCircle(x, y, pos[0], pos[1], this.size * 3));
+	}
 }
 
 /**
@@ -100,6 +105,10 @@ class Exam extends Project
 
 	override draw(): void {
 		super.draw();
+	}
+
+	override intersects(x: number, y: number): boolean {
+		return super.intersects(x, y);
 	}
 }
 
@@ -116,6 +125,10 @@ class Rush extends Project
 	override draw(): void {
 		super.draw();
 	}
+
+	override intersects(x: number, y: number): boolean {
+		return super.intersects(x, y);
+	}
 }
 
 class Piscine extends Project 
@@ -127,6 +140,10 @@ class Piscine extends Project
 
 	override draw(): void {
 		super.draw();
+	}
+
+	override intersects(x: number, y: number): boolean {
+		return super.intersects(x, y);
 	}
 }
 
@@ -142,5 +159,9 @@ class Module extends Project
 
 	override draw(): void {
 		super.draw();
+	}
+
+	override intersects(x: number, y: number): boolean {
+		return super.intersects(x, y);
 	}
 }

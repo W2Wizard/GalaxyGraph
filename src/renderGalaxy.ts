@@ -23,7 +23,7 @@ const ctx = canvas.getContext('2d');
 const circle = Math.PI * 2
 
 const zoomMax = 0.5;
-const zoomMin = 3.5;
+const zoomMin = 4.5;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Globals
@@ -45,6 +45,15 @@ window.addEventListener("resize", (evt) => {
 
 canvas.addEventListener("mousedown", (evt) => {
 	isMouseDown = true;
+
+	console.log(evt.clientX, evt.clientY);
+	projects.forEach(function (element: Project) {
+
+		if (element.intersects(evt.clientX, evt.clientY)) {
+			console.log("Project:", element.data.name);
+			return;
+		}
+	});
 });
 
 canvas.addEventListener("mouseup", (evt) => {

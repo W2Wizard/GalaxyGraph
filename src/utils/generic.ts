@@ -31,3 +31,7 @@ function translatePos(x: number, y: number, offset: number = 3000) {
 function clamp(num: number, min: number, max: number) {
 	return Math.min(Math.max(num, min), max);
 }
+
+function isInsideCircle(x: number, y: number, cx: number, cy: number, rad: number) {
+	return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= rad * rad;
+}
