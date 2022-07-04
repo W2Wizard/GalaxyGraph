@@ -6,7 +6,7 @@
 /*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/01 09:54:49 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/07/01 15:38:14 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/04 17:54:37 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,71 +107,70 @@ canvas.addEventListener("mousemove", (evt) => {
 ////////////////////////////////////////////////////////////////////////////////
 
 function draw() {
-
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+	requestAnimationFrame(draw);
+	
 	// Some upscaling
 	canvas.width = 1.42 * (window.innerWidth - 16);
 	canvas.height = 1.42 * (window.innerHeight - headerHeight - 16);
+	
 	ctx.scale(mouseZoom, mouseZoom);
 	ctx.fillStyle = "#fff"
-
+	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	
 	// Draw circles
 	ctx.lineWidth = 5;
 	ctx.strokeStyle = '#6F7278';
-
+	
 	const pos = translatePos(0, 0, 0);
-
+	
 	// Q: What are these values ???
 	// A: I have no idea, some french guy decided this was nice.
-
+	
 	// Rank 0 (1)
 	ctx.beginPath();
-		ctx.arc(pos[0], pos[1], 170, circle, 0);
-		ctx.stroke();
+	ctx.arc(pos[0], pos[1], 170, circle, 0);
+	ctx.stroke();
 	ctx.closePath();
-
+	
 	// Rank 1 (2)
 	ctx.beginPath();
-		ctx.arc(pos[0], pos[1], 345, circle, 0);
-		ctx.stroke();
+	ctx.arc(pos[0], pos[1], 345, circle, 0);
+	ctx.stroke();
 	ctx.closePath();
-
+	
 	// Rank 2 (3)
 	ctx.beginPath();
-		ctx.arc(pos[0], pos[1], 500, circle, 0);
-		ctx.stroke();
+	ctx.arc(pos[0], pos[1], 500, circle, 0);
+	ctx.stroke();
 	ctx.closePath();
-
+	
 	// Rank 3 (4)
 	ctx.beginPath();
-		ctx.arc(pos[0], pos[1], 660, circle, 0);
-		ctx.stroke();
+	ctx.arc(pos[0], pos[1], 660, circle, 0);
+	ctx.stroke();
 	ctx.closePath();
-
+	
 	// Rank 4 (5)
 	ctx.beginPath();
 	ctx.arc(pos[0], pos[1], 835, circle, 0);
 	ctx.stroke();
-
+	
 	// Rank 5 (6)
 	ctx.beginPath();
-		ctx.arc(pos[0], pos[1], 995, circle, 0);
-		ctx.stroke();
+	ctx.arc(pos[0], pos[1], 995, circle, 0);
+	ctx.stroke();
 	ctx.closePath();
-
+	
 	ctx.strokeStyle = "#6F7278";
 	ctx.lineWidth = 5;
-
+	
 	// Draw the lines
 	for (const project of projects)
 		project.drawlines();
-
+	
 	// Draw the projects
 	for (const project of projects)
 		project.draw();
-
-	requestAnimationFrame(draw);
 }
 
 function renderGraph() {

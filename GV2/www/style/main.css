@@ -6,7 +6,7 @@
 /*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/30 17:18:17 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/07/01 18:17:44 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/04 15:16:50 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ header {
 .stack-left {
 	display: inline-flex;
 	justify-content: left;
-	flex-wrap: wrap;
+	flex-wrap: unset;
 	float: left;
 }
 
@@ -138,7 +138,6 @@ header {
     color: white;
     background: #3c3c4d;
     cursor: pointer;
-	box-shadow: 2px 2px 1px 2px #30303e;
     transition: transform 0.2s;
 }
 
@@ -146,6 +145,7 @@ header {
     margin: 8px 4px;
     transform: translateY(-0.25rem);
 }
+
 .vertical {
     display: inline-block;
 	margin-top: 8px;
@@ -154,5 +154,9 @@ header {
 	height: 2em;
 	border-left: 2px solid #3c3c4d;
 }
+
+.form-check-input {
+	clear: left;
+  }
 
 /* Main */

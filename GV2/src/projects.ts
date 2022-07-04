@@ -6,7 +6,7 @@
 /*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/01 10:54:48 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/07/01 15:42:09 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/04 17:58:05 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,33 +55,42 @@ const ProjectSizes = {
 
 /**
  * A simple project.
+ * 
+ * 			
+			const from = translatePos(line.points[0][0], line.points[0][1]);
+			const to = translatePos(line.points[1][0], line.points[1][1]);
  */
 class Project {
 
 	size: number;
 	data: ProjectData;
+	element: Element2D;
+	lines: Line[] = [];
 
 	constructor(rawProjectData: ProjectData) {
 		this.data = rawProjectData;
 		this.size = ProjectSizes.Project;
+
+		for (let i = 0; i < this.data.by.length; i++) {
+			const lineDraw = this.data.by[i];
+
+			this.lines.push(new Line(lineDraw.points[0], lineDraw.points[1], 5, Colors.LightGray));
+		}
+		console.log("Added a:", this.lines.length, "lines!");
 	}
 
 	/**
 	 * Draw the project's lines.
 	 */
 	drawlines(): void {
-		for (let line of this.data.by)
-			if (line.points.length == 2) {
-				
-				const from = translatePos(line.points[0][0], line.points[0][1]);
-				const to = translatePos(line.points[1][0], line.points[1][1]);
+		for (let i = 0; i < this.lines.length; i++) {
+			const line = this.lines[i];
+			line.pos = translatePos(line.pos[0][0], line.pos[0][1]);
+			line.target = translatePos(line.target[1][0], line.target[1][1]);
 
-				ctx.beginPath();
-				ctx.lineCap = "square";
-				ctx.moveTo(from[0], from[1]);
-				ctx.lineTo(to[0], to[1]);
-				ctx.stroke();
-			}
+			//line.draw();
+			//console.log("draw!")
+		}
 	}
 
 	/**
