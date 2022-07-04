@@ -18,3 +18,34 @@ const Colors = {
 	LightGray:	"#6F7278",
 	Orange:		"#FFA300",
 };
+
+interface By {
+	parent_id: number;
+	points: number[][];
+}
+
+type ProjectData = {
+	state: string;
+	final_mark?: number;
+	id: number;
+	kind: string;
+	name: string;
+	x: number;
+	y: number;
+	by: By[];
+	project_id: number;
+	difficulty: number;
+	duration: string;
+	rules: string;
+	description: string;
+	slug: string;
+}
+
+const ProjectSizes = {
+	BigProject:		25, // Difficult project.
+	Project:		20, // Normal project.
+	Rush:			15, // Rush project.
+	Exam:			15, // Exam project.
+	Piscine:		15, // Piscine project.
+	Module:			11, // A modular project.
+};
