@@ -40,17 +40,19 @@ header {
 /* Header */
 
 /* Div container element that stacks items from the left */
-.stack-left {
+
+.stack {
 	display: inline-flex;
+	flex-wrap: wrap;
+}
+
+.stack.left {
 	justify-content: left;
-	flex-wrap: unset;
 	float: left;
 }
 
-.stack-right {
-	display: inline-flex;
+.stack.right {
 	justify-content: right;
-	flex-wrap: wrap;
 	float: right;
 }
 
@@ -64,7 +66,7 @@ header {
 	border: solid rgba(255, 255, 255, 0.1) 1px;
 	background: #2a2a36;
 	cursor: pointer;
-	transition: transform 0.2s;
+	transition: transform 0.2s ease-in-out;
 }
 
 #profile-pic {
@@ -130,33 +132,26 @@ header {
 }
 
 .button {
-	all: unset;
-    padding: 0.2rem 0.4rem;
-    margin: 8px 4px;
-    display: inline-block;
-    border-radius: 4px;
-    color: white;
-    background: #3c3c4d;
-    cursor: pointer;
-    transition: transform 0.2s;
+	outline: none;
+	border: none;
+	padding: 0.2rem 0.4rem;
+	margin: 8px 4px;
+	display: inline-block;
+	border-radius: 4px;
+	color: white;
+	background: #3c3c4d;
+	cursor: pointer;
+	transition: transform 0.2s;
 }
 
 .button:hover {
-    margin: 8px 4px;
-    transform: translateY(-0.25rem);
+	margin: 8px 4px;
+	transform: translateY(-0.25rem);
 }
 
 .vertical {
-    display: inline-block;
-	margin-top: 8px;
-	margin-left: 2px;
-	margin-right: 2px;
+	display: inline-block;
+	margin: 8px 2px 0px;
 	height: 2em;
 	border-left: 2px solid #3c3c4d;
 }
-
-.form-check-input {
-	clear: left;
-  }
-
-/* Main */
