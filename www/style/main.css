@@ -6,7 +6,7 @@
 /*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/30 17:18:17 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/07/04 15:16:50 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/06 13:01:35 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ header {
 .button {
 	outline: none;
 	border: none;
+	text-decoration: none;
 	padding: 0.2rem 0.4rem;
 	margin: 8px 4px;
 	display: inline-block;

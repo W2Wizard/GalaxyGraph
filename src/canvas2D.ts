@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/05 22:15:08 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/05 22:15:08 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/07/06 11:50:07 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ interface CanvasRenderingContextBackup {
 ////////////////////////////////////////////////////////////////////////////////
 // Functions
 ////////////////////////////////////////////////////////////////////////////////
+
+function clamp(num: number, min: number, max: number) {
+	return Math.min(Math.max(num, min), max);
+}
 
 /**
  * Inject overwritten functions to the canvas context.

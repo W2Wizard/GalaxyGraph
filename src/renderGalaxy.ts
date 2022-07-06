@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   render.ts                                          :+:    :+:            */
+/*   renderGalaxy.ts                                    :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 00:18:31 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/06 00:18:31 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/07/06 15:42:24 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,15 @@
 const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height'));
 
 const canvas = document.getElementById('galaxy-graph') as HTMLCanvasElement;
+const search = document.getElementById('graph-search') as HTMLInputElement;
 const ctx = canvas.getContext('2d');
 
 /* Graph config */
 
 const zoomSpeed = 1.1;			// Closer to 0 is slower.
 const mouseWheelSpeed = 0.01;	// Higher value is faster.
-const centerPosition = 3000;	// The 'Center' of the galaxy graph, usually libft.
+const centerOffsetPos = 3000;	// The 'Center' of the galaxy graph, usually libft.
+const startZoom = 0.2;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Events
@@ -32,12 +34,12 @@ const centerPosition = 3000;	// The 'Center' of the galaxy graph, usually libft.
 window.onload = function () {
 
 	// Set Canvas size
+	// TODO: 1 * is the resolution scaling, currently increasing it breaks stuff.
 	canvas.width = 1 * (window.innerWidth - 16);
 	canvas.height = 1 * (window.innerHeight - headerHeight - 16);
 
 	init();
-
-	centerCanvas()
+	resetCanvas();
 	draw();
 }
 
@@ -47,23 +49,10 @@ window.addEventListener("resize", function () {
 	canvas.width = 1 * (window.innerWidth - 16);
 	canvas.height = 1 * (window.innerHeight - headerHeight - 16);
 
-
-	// BUG: The current scale is not taken into account.
-
-	//let oldOffsets = getCanvasTranslationOffsets()
-	
-	// oldOffsets.x /= factor
-	// oldOffsets.y /= factor
-	
-	// console.log(factor)
-	
 	// Restore tracked transforms
 	untrackTransforms(ctx, backup);
 	trackTransforms(ctx);
-
-	//setCanvasTranslationOffsets(oldOffsets.x, oldOffsets.y)
-	// HACK: To avoid going to origin 0, 0 we just center it for now.
-	centerCanvas();
+	resetCanvas();
 	draw();
 });
 
@@ -73,17 +62,6 @@ canvas.addEventListener('mousedown', function (evt) {
 
 	dragStart = (ctx as any).transformPoint(lastMousePosition.x, lastMousePosition.y);
 	isDrag = false;
-
-	projects.forEach(function (element: Project) {
-
-		const pos = getMousePositionTransformed(evt);
-
-		if (element.intersects(pos.x, pos.y)) {
-			// TODO: Do something here, implement onAction for projects
-			console.log("Project:", element.data.name);
-			return;
-		}
-	});
 });
 
 canvas.addEventListener('mousemove', function (evt) {
@@ -99,8 +77,19 @@ canvas.addEventListener('mousemove', function (evt) {
 	draw();
 });
 
-canvas.addEventListener('mouseup', function () {
+canvas.addEventListener('mouseup', function (evt) {
 	dragStart = null;
+
+	projects.forEach(function (element: Project) {
+
+		const pos = getMousePositionTransformed(evt);
+
+		if (element.intersects(pos.x, pos.y)) {
+			// TODO: Do something here, implement onAction for projects
+			console.log("Project:", element.data.name);
+			return;
+		}
+	});
 });
 
 canvas.addEventListener("mouseout", function () {
@@ -115,27 +104,59 @@ canvas.addEventListener('mousewheel', function (evt: any) {
 		zoom(delta);
 });
 
+search.addEventListener('submit', function (evt) {
+	evt.preventDefault();
+
+	projects.forEach(function (element: Project) {
+		if (element.data.name.toLowerCase() == search.value) {
+			ctx.setTransform(1, 0, 0, 1, 0, 0);
+			setCanvasPosition(element.data.x, element.data.y);
+			draw();
+			return;
+		}
+	});
+});
+
 ////////////////////////////////////////////////////////////////////////////////
 // Globals
 ////////////////////////////////////////////////////////////////////////////////
 
 let backup = trackTransforms(ctx);
-let lastMousePosition = {
-	x: canvas.width / 2.0,
-	y: canvas.height / 2.0
-}
-
 let dragStart: DOMPoint;
 let isDrag: boolean;
 let projects: Project[] = [];
 let factor = 0;
+let lastMousePosition = {
+	x: canvas.width / 2.0,
+	y: canvas.height / 2.0
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Functions
 ////////////////////////////////////////////////////////////////////////////////
 
 function centerCanvas() {
-	setCanvasTranslationOffsets(-centerPosition + (canvas.width / 2.0), -centerPosition + (canvas.height / 2.0))
+	setCanvasTranslationOffsets(-centerOffsetPos + (canvas.width / 2.0), -centerOffsetPos + (canvas.height / 2.0))
+}
+
+function setCanvasZoom(amount: number) {
+	const point = (ctx as any).transformPoint(canvas.width / 2.0, canvas.height / 2.0);
+
+	ctx.translate(point.x, point.y);
+	ctx.scale(amount, amount);
+	ctx.translate(-point.x, -point.y);
+}
+
+function setCanvasPosition(x: number, y: number) {
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
+	setCanvasTranslationOffsets(-x + (canvas.width / 2.0), -y + (canvas.height / 2.0))
+}
+
+function resetCanvas() {
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
+	centerCanvas();
+	setCanvasZoom(0.2);
+	draw();
 }
 
 function getMousePosition(evt: MouseEvent) {
@@ -181,13 +202,14 @@ function draw() {
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.restore();
-	
+
 	ctx.save();
-	ctx.lineWidth = 5;
+	ctx.lineWidth = 10;
+	ctx.lineCap = "square";
 	ctx.strokeStyle = Colors.LightGray;
 	for (let i = 0, radius = 170; i < 6; i++, radius += 165.3) {
 		ctx.beginPath();
-		ctx.arc(centerPosition, centerPosition, radius, Math.PI * 2, 0);
+		ctx.arc(centerOffsetPos, centerOffsetPos, radius, Math.PI * 2, 0);
 		ctx.stroke();
 		ctx.closePath();
 	}
@@ -234,6 +256,7 @@ function init() {
 		// HACK: Since IntraAPI V2 does not specifiy this kind.
 		if (element.name.toLowerCase().includes("module"))
 			newProject = new Module(element);
+
 		// HACK: Because 42 is so competent they HARDCODE the size of transendence in intra ...
 		else if (element.name == "ft_transendence") {
 			newProject.size = ProjectSizes.BigProject;

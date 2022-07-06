@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 01:31:17 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/06 01:31:17 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/07/06 14:05:37 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@ class Project {
 	size: number;
 	lines: any[] = [];
 	data: ProjectData;
+	state: any;
+	fontSize: number;
 
 	constructor(rawProjectData: ProjectData) {
 		this.data = rawProjectData;
@@ -24,6 +26,12 @@ class Project {
 			const points = this.data.by[i].points;
 			this.lines.push({origin: points[0], target: points[1], color: Colors.LightGray});
 		}
+
+		this.state = ProjectStatus[this.data.state];
+		
+		// TODO: Limit upper bound based on character count.
+		this.fontSize = (this.size / this.data.name.length) * 2;
+		this.fontSize = clamp(this.fontSize, 10, 22);
 	}
 
 	/**
@@ -32,18 +40,18 @@ class Project {
 	drawlines(): void {
 
 		ctx.save();
-		ctx.lineWidth = 7;
-		ctx.lineCap = "square";
-
 		for (let i = 0; i < this.lines.length; i++) {
 			const line = this.lines[i];
 			
-			ctx.strokeStyle = line.color;
+			ctx.save();
 			ctx.beginPath();
+				ctx.lineWidth = 10;
+				ctx.strokeStyle = line.color;
 				ctx.moveTo(line.origin[0], line.origin[1]);
 				ctx.lineTo(line.target[0], line.target[1]);
 			ctx.closePath()
 			ctx.stroke();
+			ctx.restore();
 		}
 		ctx.restore();
 	}
@@ -55,14 +63,14 @@ class Project {
 
 		// Background
 		ctx.beginPath();
-			ctx.fillStyle = Colors.LightGray;
+			ctx.fillStyle = this.state.background;
 			ctx.arc(this.data.x, this.data.y, this.size, Math.PI * 2, 0);
 			ctx.fill();
 		ctx.closePath();
 
 		// Foreground
 		ctx.beginPath();
-			ctx.fillStyle = Colors.Gray;
+			ctx.fillStyle = this.state.foreground;
 			ctx.arc(this.data.x, this.data.y, this.size * 0.9, Math.PI * 2, 0);
 			ctx.fill();
 		ctx.closePath();
@@ -70,10 +78,11 @@ class Project {
 		// Title
 		// TODO: Scale the text based on its length and sphere this.size
 		ctx.beginPath();
-			ctx.font = `normal bold ${15}px Arial`;
-			ctx.fillStyle = Colors.LightGray;
+
+			ctx.font = `normal bold ${this.fontSize}px Arial`;
 			ctx.textAlign = 'center';
-			ctx.fillText(this.data.name, this.data.x, this.data.y);
+			ctx.fillStyle = this.state.textColor;
+			ctx.fillText(this.data.name, this.data.x, this.data.y + 4.5);
 			ctx.fill();
 		ctx.closePath();
 	}

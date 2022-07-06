@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 01:30:53 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/06 01:30:53 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/07/06 12:32:58 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,13 @@ const ProjectSizes = {
 	Rush:			50, // Rush project.
 	Exam:			25, // Exam project.
 	Piscine:		50, // Piscine project.
-	Module:			20, // A modular project.
+	Module:			30, // A modular project.
 };
+
+const ProjectStatus = {
+	"done": 		{foreground: Colors.Cyan, background: Colors.Cyan, textColor: Colors.White},
+	"failed": 		{foreground: Colors.Red, background: Colors.Red, textColor: Colors.White},
+	"available": 	{foreground: Colors.Gray, background: Colors.White, textColor: Colors.White},
+	"unavailable":	{foreground: Colors.Gray, background: Colors.LightGray, textColor: Colors.LightGray},
+	"in_progress":	{foreground: Colors.Gray, background: Colors.Cyan, textColor: Colors.Cyan},
+}
