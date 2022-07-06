@@ -14,22 +14,6 @@
 // This was the only good source I found which used the deprecated SVGMatrix.
 // See: http://phrogz.net/tmp/canvas_zoom_to_cursor.html
 
-// TODO: Refactor
-
-////////////////////////////////////////////////////////////////////////////////
-// Globals
-////////////////////////////////////////////////////////////////////////////////
-
-interface CanvasRenderingContextBackup {
-	backupSave: any,
-	backupRestore: any,
-	backupScale: any,
-	backupRotate: any,
-	backupTranslate: any,
-	backupTransform: any,
-	backupSetTransform: any,
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // Functions
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +26,7 @@ function clamp(num: number, min: number, max: number) {
  * Inject overwritten functions to the canvas context.
  * @param ctx The context object.
  */
-function trackTransforms(ctx: CanvasRenderingContext2D): CanvasRenderingContextBackup {
+function injectTransOverrides(ctx: CanvasRenderingContext2D) {
 
 	const savedTransforms = [];
 	let matrix = new DOMMatrix();
@@ -89,36 +73,22 @@ function trackTransforms(ctx: CanvasRenderingContext2D): CanvasRenderingContextB
 
 	const setTransform = ctx.setTransform;
 	(ctx as any).setTransform = function (a, b, c, d, e, f) {
-		matrix.a = a;
-		matrix.b = b;
-		matrix.c = c;
-		matrix.d = d;
-		matrix.e = e;
-		matrix.f = f;
+		matrix.a = a; matrix.b = b; matrix.c = c; matrix.d = d; matrix.e = e; matrix.f = f;
 		return (setTransform as any).call(ctx, a, b, c, d, e, f);
 	};
 
 	(ctx as any).getScale = function () {
-		return {scaleX: Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b),
-				scaleY: Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d)};
+		return {
+			scaleX: Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b),
+			scaleY: Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d)
+		};
 	}
 
-	// Apply the transformation matrix onto a given point.
 	const pt = new DOMPoint();
 	(ctx as any).transformPoint = function (x, y): DOMPoint {
 		pt.x = x;
 		pt.y = y;
 		return pt.matrixTransform(matrix.inverse());
-	}
-
-	return {
-		backupRestore: restore,
-		backupRotate: rotate,
-		backupSave: save,
-		backupScale: scale,
-		backupSetTransform: setTransform,
-		backupTransform: transform,
-		backupTranslate: translate
 	}
 }
 
@@ -133,16 +103,6 @@ function getCanvasTranslationOffsets() {
 	const trans = ctx.getTransform();
 
 	return { x: trans.m41, y: trans.m42 };
-}
-
-function untrackTransforms(ctx: CanvasRenderingContext2D, backup: CanvasRenderingContextBackup) {
-	ctx.restore = backup.backupRestore
-	ctx.rotate = backup.backupRotate
-	ctx.save = backup.backupSave
-	ctx.scale = backup.backupScale
-	ctx.setTransform = backup.backupSetTransform
-	ctx.transform = backup.backupTransform
-	ctx.translate = backup.backupTranslate
 }
 
 ////////////////////////////////////////////////////////////////////////////////

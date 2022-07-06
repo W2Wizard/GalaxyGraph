@@ -35,6 +35,7 @@ const maxZoom = 10.0;					// Biggest possible zoom.
 ////////////////////////////////////////////////////////////////////////////////
 
 window.onload = function () {
+	injectTransOverrides(ctx);
 
 	// Set Canvas size
 	canvas.width = canvasScale * (window.innerWidth - 16);
@@ -51,9 +52,6 @@ window.addEventListener("resize", function () {
 	canvas.width = canvasScale * (window.innerWidth - 16);
 	canvas.height = canvasScale * (window.innerHeight - headerHeight - 16);
 
-	// Restore tracked transforms
-	untrackTransforms(ctx, backup);
-	trackTransforms(ctx);
 	resetCanvas();
 	draw();
 });
@@ -122,7 +120,6 @@ search.addEventListener('submit', function (evt) {
 // Globals
 ////////////////////////////////////////////////////////////////////////////////
 
-let backup = trackTransforms(ctx);
 let dragStart: DOMPoint;
 let isDrag: boolean;
 let projects: Project[] = [];
