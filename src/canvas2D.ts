@@ -44,13 +44,13 @@ function trackTransforms(ctx: CanvasRenderingContext2D): CanvasRenderingContextB
 	ctx.getTransform = () => { return matrix; };
 
 	const save = ctx.save;
-	ctx.save = () => {
+	ctx.save = function () {
 		savedTransforms.push(matrix.translate(0, 0));
 		return save.call(ctx);
 	};
 
 	const restore = ctx.restore;
-	ctx.restore = () => {
+	ctx.restore = function () {
 		matrix = savedTransforms.pop();
 		return restore.call(ctx);
 	};
@@ -82,7 +82,7 @@ function trackTransforms(ctx: CanvasRenderingContext2D): CanvasRenderingContextB
 	};
 
 	const setTransform = ctx.setTransform;
-	(ctx as any).setTransform = (a, b, c, d, e, f) => {
+	(ctx as any).setTransform = function (a, b, c, d, e, f) {
 		matrix.a = a;
 		matrix.b = b;
 		matrix.c = c;
@@ -92,9 +92,11 @@ function trackTransforms(ctx: CanvasRenderingContext2D): CanvasRenderingContextB
 		return (setTransform as any).call(ctx, a, b, c, d, e, f);
 	};
 
+	// Apply the transformation matrix onto a given point.
 	const pt = new DOMPoint();
-	(ctx as any).transformPoint = (x, y) => {
-		pt.x = x; pt.y = y;
+	(ctx as any).transformPoint = function (x, y): DOMPoint {
+		pt.x = x; 
+		pt.y = y;
 		return pt.matrixTransform(matrix.inverse());
 	}
 
@@ -110,19 +112,16 @@ function trackTransforms(ctx: CanvasRenderingContext2D): CanvasRenderingContextB
 }
 
 function setCanvasTranslationOffsets(x: number, y: number) {
-	let trans = ctx.getTransform()
-	trans.m41 = x
-	trans.m42 = y
-	ctx.setTransform(trans.a, trans.b, trans.c, trans.d, trans.e, trans.f)
+	const trans = ctx.getTransform();
+	trans.m41 = x;
+	trans.m42 = y;
+	ctx.setTransform(trans.a, trans.b, trans.c, trans.d, trans.e, trans.f);
 }
 
 function getCanvasTranslationOffsets() {
-	let trans = ctx.getTransform()
+	const trans = ctx.getTransform();
 
-	return {
-		x: trans.m41,
-		y: trans.m42
-	}
+	return { x: trans.m41, y: trans.m42 };
 }
 
 function untrackTransforms(ctx: CanvasRenderingContext2D, backup: CanvasRenderingContextBackup) {
@@ -133,4 +132,12 @@ function untrackTransforms(ctx: CanvasRenderingContext2D, backup: CanvasRenderin
 	ctx.setTransform = backup.backupSetTransform
 	ctx.transform = backup.backupTransform
 	ctx.translate = backup.backupTranslate
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Intersections
+////////////////////////////////////////////////////////////////////////////////
+
+function isInsideCircle(x: number, y: number, cx: number, cy: number, rad: number) {
+	return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= rad * rad;
 }

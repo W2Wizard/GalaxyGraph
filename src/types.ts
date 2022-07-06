@@ -42,10 +42,10 @@ type ProjectData = {
 }
 
 const ProjectSizes = {
-	BigProject:		25, // Difficult project.
-	Project:		20, // Normal project.
-	Rush:			15, // Rush project.
-	Exam:			15, // Exam project.
-	Piscine:		15, // Piscine project.
-	Module:			11, // A modular project.
+	BigProject:		75, // Difficult project.
+	Project:		50, // Normal project.
+	Rush:			50, // Rush project.
+	Exam:			25, // Exam project.
+	Piscine:		50, // Piscine project.
+	Module:			20, // A modular project.
 };

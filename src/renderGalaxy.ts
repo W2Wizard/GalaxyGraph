@@ -19,12 +19,11 @@ const headerHeight = parseInt(getComputedStyle(document.documentElement).getProp
 const canvas = document.getElementById('galaxy-graph') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d');
 
-/**
- * Graph config
- */
+/* Graph config */
 
-const zoomSpeed = 1.1;
-const mouseWheelSpeed = 0.01;
+const zoomSpeed = 1.1;			// Closer to 0 is slower.
+const mouseWheelSpeed = 0.01;	// Higher value is faster.
+const centerPosition = 3000;	// The 'Center' of the galaxy graph, usually libft.
 
 ////////////////////////////////////////////////////////////////////////////////
 // Events
@@ -48,18 +47,23 @@ window.addEventListener("resize", function () {
 	canvas.width = 1 * (window.innerWidth - 16);
 	canvas.height = 1 * (window.innerHeight - headerHeight - 16);
 
-	let oldOffsets = getCanvasTranslationOffsets()
+
+	// BUG: The current scale is not taken into account.
+
+	//let oldOffsets = getCanvasTranslationOffsets()
 	
 	// oldOffsets.x /= factor
 	// oldOffsets.y /= factor
 	
-	console.log(factor)
+	// console.log(factor)
 	
 	// Restore tracked transforms
 	untrackTransforms(ctx, backup);
 	trackTransforms(ctx);
 
-	setCanvasTranslationOffsets(oldOffsets.x, oldOffsets.y)
+	//setCanvasTranslationOffsets(oldOffsets.x, oldOffsets.y)
+	// HACK: To avoid going to origin 0, 0 we just center it for now.
+	centerCanvas();
 	draw();
 });
 
@@ -69,6 +73,17 @@ canvas.addEventListener('mousedown', function (evt) {
 
 	dragStart = (ctx as any).transformPoint(lastMousePosition.x, lastMousePosition.y);
 	isDrag = false;
+
+	projects.forEach(function (element: Project) {
+
+		const pos = getMousePositionTransformed(evt);
+
+		if (element.intersects(pos.x, pos.y)) {
+			// TODO: Do something here, implement onAction for projects
+			console.log("Project:", element.data.name);
+			return;
+		}
+	});
 });
 
 canvas.addEventListener('mousemove', function (evt) {
@@ -110,15 +125,17 @@ let lastMousePosition = {
 	y: canvas.height / 2.0
 }
 
-let dragStart: DOMPoint, isDrag: boolean;
+let dragStart: DOMPoint;
+let isDrag: boolean;
 let projects: Project[] = [];
+let factor = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Functions
 ////////////////////////////////////////////////////////////////////////////////
 
 function centerCanvas() {
-	setCanvasTranslationOffsets(-3000 + (canvas.width / 2.0), -3000 + (canvas.height / 2.0))
+	setCanvasTranslationOffsets(-centerPosition + (canvas.width / 2.0), -centerPosition + (canvas.height / 2.0))
 }
 
 function getMousePosition(evt: MouseEvent) {
@@ -138,8 +155,6 @@ function getMousePositionTransformed(evt: MouseEvent) {
 		y: transPos.y as number
 	}
 }
-
-let factor = 0
 
 function zoom(delta: number) {
 	const point = (ctx as any).transformPoint(lastMousePosition.x, lastMousePosition.y);
@@ -166,6 +181,17 @@ function draw() {
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.restore();
+	
+	ctx.save();
+	ctx.lineWidth = 5;
+	ctx.strokeStyle = Colors.LightGray;
+	for (let i = 0, radius = 170; i < 6; i++, radius += 165.3) {
+		ctx.beginPath();
+		ctx.arc(centerPosition, centerPosition, radius, Math.PI * 2, 0);
+		ctx.stroke();
+		ctx.closePath();
+	}
+	ctx.restore();
 
 	for (const project of projects)
 		project.drawlines();
@@ -173,16 +199,6 @@ function draw() {
 	for (const project of projects)
 		project.draw();
 
-	ctx.save();
-	ctx.lineWidth = 5;
-	ctx.strokeStyle = Colors.LightGray;
-	for (let i = 0, radius = 170; i < 6; i++, radius += 165.3) {
-		ctx.beginPath();
-		ctx.arc(3000, 3000, radius, Math.PI * 2, 0);
-		ctx.stroke();
-		ctx.closePath();
-	}
-	ctx.restore();
 }
 
 function init() {
