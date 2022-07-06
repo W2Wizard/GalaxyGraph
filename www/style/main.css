@@ -29,7 +29,7 @@ header {
 	width: 100%;
 	display: block;
 	border-radius: 8px;
-	background: radial-gradient(circle at center, #003144 50%, #090a0f 100%);
+	background: #003144;
 	background-size: cover;
 	background-attachment: fixed;
 	position: relative;

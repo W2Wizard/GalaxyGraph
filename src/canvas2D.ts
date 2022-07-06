@@ -40,17 +40,17 @@ function trackTransforms(ctx: CanvasRenderingContext2D): CanvasRenderingContextB
 
 	const savedTransforms = [];
 	let matrix = new DOMMatrix();
-	
-	ctx.getTransform = () =>  { return matrix; };
+
+	ctx.getTransform = () => { return matrix; };
 
 	const save = ctx.save;
-	ctx.save = () =>  {
+	ctx.save = () => {
 		savedTransforms.push(matrix.translate(0, 0));
 		return save.call(ctx);
 	};
 
 	const restore = ctx.restore;
-	ctx.restore = () =>  {
+	ctx.restore = () => {
 		matrix = savedTransforms.pop();
 		return restore.call(ctx);
 	};
@@ -106,6 +106,22 @@ function trackTransforms(ctx: CanvasRenderingContext2D): CanvasRenderingContextB
 		backupSetTransform: setTransform,
 		backupTransform: transform,
 		backupTranslate: translate
+	}
+}
+
+function setCanvasTranslationOffsets(x: number, y: number) {
+	let trans = ctx.getTransform()
+	trans.m41 = x
+	trans.m42 = y
+	ctx.setTransform(trans.a, trans.b, trans.c, trans.d, trans.e, trans.f)
+}
+
+function getCanvasTranslationOffsets() {
+	let trans = ctx.getTransform()
+
+	return {
+		x: trans.m41,
+		y: trans.m42
 	}
 }
 
