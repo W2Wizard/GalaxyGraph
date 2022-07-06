@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 00:18:31 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/06 15:42:24 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/06 17:02:37 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@ const ctx = canvas.getContext('2d');
 
 /* Graph config */
 
-const zoomSpeed = 1.1;			// Closer to 0 is slower.
-const mouseWheelSpeed = 0.01;	// Higher value is faster.
-const centerOffsetPos = 3000;	// The 'Center' of the galaxy graph, usually libft.
-const startZoom = 0.2;
+const zoomSpeed = 1.1;					// Closer to 0 is slower.
+const mouseWheelSpeed = 0.01;			// Higher value is faster.
+const centerOffsetPos = 3000;			// The 'Center' of the galaxy graph, usually libft.
+const canvasScale = 3.0;				// The upscaling of the canvas, higher is more resolution.
+const startZoom = canvasScale / 4.55;	// Bigger value further, smaller closer
 
 ////////////////////////////////////////////////////////////////////////////////
 // Events
@@ -34,9 +35,8 @@ const startZoom = 0.2;
 window.onload = function () {
 
 	// Set Canvas size
-	// TODO: 1 * is the resolution scaling, currently increasing it breaks stuff.
-	canvas.width = 1 * (window.innerWidth - 16);
-	canvas.height = 1 * (window.innerHeight - headerHeight - 16);
+	canvas.width = canvasScale * (window.innerWidth - 16);
+	canvas.height = canvasScale * (window.innerHeight - headerHeight - 16);
 
 	init();
 	resetCanvas();
@@ -46,8 +46,8 @@ window.onload = function () {
 window.addEventListener("resize", function () {
 
 	// Recalculate the canvas size
-	canvas.width = 1 * (window.innerWidth - 16);
-	canvas.height = 1 * (window.innerHeight - headerHeight - 16);
+	canvas.width = canvasScale * (window.innerWidth - 16);
+	canvas.height = canvasScale * (window.innerHeight - headerHeight - 16);
 
 	// Restore tracked transforms
 	untrackTransforms(ctx, backup);
@@ -66,7 +66,7 @@ canvas.addEventListener('mousedown', function (evt) {
 
 canvas.addEventListener('mousemove', function (evt) {
 
-	lastMousePosition = getMousePosition(evt)
+	lastMousePosition = getMousePosition(evt);
 	isDrag = true;
 
 	if (!dragStart)
@@ -155,15 +155,19 @@ function setCanvasPosition(x: number, y: number) {
 function resetCanvas() {
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	centerCanvas();
-	setCanvasZoom(0.2);
+	setCanvasZoom(startZoom);
 	draw();
 }
 
 function getMousePosition(evt: MouseEvent) {
-	return {
-		x: evt.offsetX || (evt.pageX - canvas.offsetLeft),
-		y: evt.offsetY || (evt.pageY - canvas.offsetTop)
-	}
+
+	let x = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+	let y = evt.offsetY || (evt.pageY - canvas.offsetTop);
+
+	x *= canvasScale;
+	y *= canvasScale;
+
+	return {x: x, y: y};
 }
 
 function getMousePositionTransformed(evt: MouseEvent) {
