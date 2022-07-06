@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 01:30:53 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/06 12:32:58 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/06 17:46:33 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ const ProjectSizes = {
 
 const ProjectStatus = {
 	"done": 		{foreground: Colors.Cyan, background: Colors.Cyan, textColor: Colors.White},
-	"failed": 		{foreground: Colors.Red, background: Colors.Red, textColor: Colors.White},
+	"fail": 		{foreground: Colors.Red, background: Colors.Red, textColor: Colors.White},
 	"available": 	{foreground: Colors.Gray, background: Colors.White, textColor: Colors.White},
 	"unavailable":	{foreground: Colors.Gray, background: Colors.LightGray, textColor: Colors.LightGray},
 	"in_progress":	{foreground: Colors.Gray, background: Colors.Cyan, textColor: Colors.Cyan},
