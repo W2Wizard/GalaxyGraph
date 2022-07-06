@@ -79,7 +79,7 @@ class Project {
 		// TODO: Scale the text based on its length and sphere this.size
 		ctx.beginPath();
 
-			ctx.font = `normal bold ${this.fontSize}px Arial`;
+			ctx.font = `normal bold ${this.fontSize}px Segoe UI`;
 			ctx.textAlign = 'center';
 			ctx.fillStyle = this.state.textColor;
 			ctx.fillText(this.data.name, this.data.x, this.data.y + 4.5);

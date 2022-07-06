@@ -15,7 +15,7 @@
 }
 
 body {
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-family: 'Segoe UI';
 	background: #2a2a36;
 	min-width: 600px;
 	margin: 8px;
@@ -29,10 +29,23 @@ header {
 	width: 100%;
 	display: block;
 	border-radius: 8px;
-	background: #003144;
+	background: radial-gradient(ellipse at bottom, #002534 25%, #090a0f 100%);
 	background-size: cover;
 	background-attachment: fixed;
 	position: relative;
+}
+
+#graph-content {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 300px;
+	margin: 1rem;
+	color: #ecf0f1;
+	border: solid 1px gray;
+	background-color: rgba(6,19,28,0.68);
+    border-radius: 5px;
+    padding: 20px;
 }
 
 /******************************************************************************/

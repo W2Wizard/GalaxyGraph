@@ -25,8 +25,10 @@ const ctx = canvas.getContext('2d');
 const zoomSpeed = 1.1;					// Closer to 0 is slower.
 const mouseWheelSpeed = 0.01;			// Higher value is faster.
 const centerOffsetPos = 3000;			// The 'Center' of the galaxy graph, usually libft.
-const canvasScale = 3.0;				// The upscaling of the canvas, higher is more resolution.
-const startZoom = canvasScale / 4.55;	// Bigger value further, smaller closer
+const canvasScale = 2.0;				// The upscaling of the canvas, higher is more resolution.
+const startZoom = canvasScale / 4.55;	// Bigger value further, smaller closer.
+const minZoom = 0.5;					// Smallest possible zoom.
+const maxZoom = 10.0;					// Biggest possible zoom.
 
 ////////////////////////////////////////////////////////////////////////////////
 // Events
@@ -109,7 +111,6 @@ search.addEventListener('submit', function (evt) {
 
 	projects.forEach(function (element: Project) {
 		if (element.data.name.toLowerCase() == search.value) {
-			ctx.setTransform(1, 0, 0, 1, 0, 0);
 			setCanvasPosition(element.data.x, element.data.y);
 			draw();
 			return;
@@ -135,64 +136,87 @@ let lastMousePosition = {
 // Functions
 ////////////////////////////////////////////////////////////////////////////////
 
-function centerCanvas() {
-	setCanvasTranslationOffsets(-centerOffsetPos + (canvas.width / 2.0), -centerOffsetPos + (canvas.height / 2.0))
+/**
+ * 
+ * @param delta 
+ * @returns 
+ */
+function zoom(delta: number) {
+
+	factor = Math.pow(zoomSpeed, delta);
+
+	// Clamp zoom
+	// NOTE: The scale will always be uniform.
+	const scaleX = (ctx as any).getScale().scaleX;
+	if ((scaleX >= maxZoom && factor > 1) || (scaleX <= minZoom && factor < 1))
+		return;
+
+	setCanvasZoom(lastMousePosition.x, lastMousePosition.y, factor);
+	draw();
 }
 
-function setCanvasZoom(amount: number) {
-	const point = (ctx as any).transformPoint(canvas.width / 2.0, canvas.height / 2.0);
+/**
+ * Set the zoom for a given offset.
+ * @param x X offset to which to apply the zoom.
+ * @param y Y offset to which to apply the zoom.
+ * @param amount The zoom amount, bigger value further (1), smaller closer (0)
+ */
+function setCanvasZoom(x: number, y: number, amount: number) {
+
+	const point = (ctx as any).transformPoint(x, y);
 
 	ctx.translate(point.x, point.y);
 	ctx.scale(amount, amount);
 	ctx.translate(-point.x, -point.y);
 }
 
+/**
+ * Set the position of the current canvas translation to a given X and Y.
+ * @param x The X position.
+ * @param y The Y position
+ */
 function setCanvasPosition(x: number, y: number) {
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	setCanvasTranslationOffsets(-x + (canvas.width / 2.0), -y + (canvas.height / 2.0))
 }
 
+/**
+ * Reset the canvas back to the middle and reset to start zoom.
+ */
 function resetCanvas() {
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	centerCanvas();
-	setCanvasZoom(startZoom);
-	draw();
+
+	setCanvasPosition(centerOffsetPos, centerOffsetPos);
+	setCanvasZoom(canvas.width / 2.0, canvas.height / 2.0, startZoom);
 }
 
+/**
+ * Get the current scaled but non-transformed mouse position from the event.
+ * @param evt The event.
+ * @returns The mouse position.
+ */
 function getMousePosition(evt: MouseEvent) {
 
-	let x = evt.offsetX || (evt.pageX - canvas.offsetLeft);
-	let y = evt.offsetY || (evt.pageY - canvas.offsetTop);
-
-	x *= canvasScale;
-	y *= canvasScale;
+	const x = (evt.offsetX || (evt.pageX - canvas.offsetLeft)) * canvasScale;
+	const y = (evt.offsetY || (evt.pageY - canvas.offsetTop)) * canvasScale;
 
 	return {x: x, y: y};
 }
 
+/**
+ * Get the current scaled, transformed mouse position from the event.
+ * @param evt The event.
+ * @returns The mouse position.
+ */
 function getMousePositionTransformed(evt: MouseEvent) {
 
-	let mousePos = getMousePosition(evt)
-	let transPos = (ctx as any).transformPoint(mousePos.x, mousePos.y);
+	const mousePos = getMousePosition(evt)
+	const transPos = (ctx as any).transformPoint(mousePos.x, mousePos.y);
 
 	return {
 		x: transPos.x as number,
 		y: transPos.y as number
 	}
-}
-
-function zoom(delta: number) {
-	const point = (ctx as any).transformPoint(lastMousePosition.x, lastMousePosition.y);
-
-	// TODO: Revisit this!
-	factor = Math.pow(zoomSpeed, delta)
-
-	// Set canvas origin to point, then scale and revert.
-	ctx.translate(point.x, point.y);
-	ctx.scale(factor, factor);
-	ctx.translate(-point.x, -point.y);
-
-	draw();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -209,9 +233,8 @@ function draw() {
 
 	ctx.save();
 	ctx.lineWidth = 10;
-	ctx.lineCap = "square";
 	ctx.strokeStyle = Colors.LightGray;
-	for (let i = 0, radius = 170; i < 6; i++, radius += 165.3) {
+	for (let i = 0, radius = 170; i < 6; i++, radius += 165) {
 		ctx.beginPath();
 		ctx.arc(centerOffsetPos, centerOffsetPos, radius, Math.PI * 2, 0);
 		ctx.stroke();

@@ -14,6 +14,8 @@
 // This was the only good source I found which used the deprecated SVGMatrix.
 // See: http://phrogz.net/tmp/canvas_zoom_to_cursor.html
 
+// TODO: Refactor
+
 ////////////////////////////////////////////////////////////////////////////////
 // Globals
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,10 +98,15 @@ function trackTransforms(ctx: CanvasRenderingContext2D): CanvasRenderingContextB
 		return (setTransform as any).call(ctx, a, b, c, d, e, f);
 	};
 
+	(ctx as any).getScale = function () {
+		return {scaleX: Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b),
+				scaleY: Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d)};
+	}
+
 	// Apply the transformation matrix onto a given point.
 	const pt = new DOMPoint();
 	(ctx as any).transformPoint = function (x, y): DOMPoint {
-		pt.x = x; 
+		pt.x = x;
 		pt.y = y;
 		return pt.matrixTransform(matrix.inverse());
 	}
