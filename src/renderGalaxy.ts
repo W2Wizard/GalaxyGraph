@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 00:18:31 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/06 17:02:37 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/07 16:25:23 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,19 @@ const canvas = document.getElementById('galaxy-graph') as HTMLCanvasElement;
 const search = document.getElementById('graph-search') as HTMLInputElement;
 const ctx = canvas.getContext('2d');
 
-/* Graph config */
+const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
-const zoomSpeed = 1.1;					// Closer to 0 is slower.
-const mouseWheelSpeed = 0.01;			// Higher value is faster.
-const centerOffsetPos = 3000;			// The 'Center' of the galaxy graph, usually libft.
-const canvasScale = 2.0;				// The upscaling of the canvas, higher is more resolution.
-const startZoom = canvasScale / 4.55;	// Bigger value further, smaller closer.
-const minZoom = 0.5;					// Smallest possible zoom.
-const maxZoom = 10.0;					// Biggest possible zoom.
+/* Graph config */
+const canvasScale = isFirefox ? 1.25 : 2; // The upscaling of the canvas, higher is more resolution.
+
+const config = {
+	zoomSpeed: 1.1,						// Closer to 0 is slower.
+	mouseWheelSpeed: 0.01,				// Higher value is faster.
+	centerOffsetPos: 3000,				// The 'Center' of the galaxy graph, usually libft.
+	startZoom: canvasScale / 4.55,		// Bigger value further, smaller closer.
+	minZoom: 0.5,						// Smallest possible zoom.
+	maxZoom: 10.0,						// Biggest possible zoom.
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Events
@@ -40,6 +44,8 @@ window.onload = function () {
 	// Set Canvas size
 	canvas.width = canvasScale * (window.innerWidth - 16);
 	canvas.height = canvasScale * (window.innerHeight - headerHeight - 16);
+
+	console.log(navigator);
 
 	init();
 	resetCanvas();
@@ -84,10 +90,10 @@ canvas.addEventListener('mouseup', function (evt) {
 
 		const pos = getMousePositionTransformed(evt);
 
+		element.selected = false;
 		if (element.intersects(pos.x, pos.y)) {
-			// TODO: Do something here, implement onAction for projects
-			console.log("Project:", element.data.name);
-			return;
+			element.onClick()
+			draw();
 		}
 	});
 });
@@ -96,24 +102,30 @@ canvas.addEventListener("mouseout", function () {
 	dragStart = null;
 });
 
-canvas.addEventListener('mousewheel', function (evt: any) {
+const handleScroll = function (evt: any) {
 	evt.preventDefault();
 
-	const delta = evt.wheelDelta * mouseWheelSpeed;
+	const delta = evt.wheelDelta * config.mouseWheelSpeed;
 	if (delta)
 		zoom(delta);
-});
+}
+
+// NOTE: Fuck firefox
+canvas.addEventListener('wheel',handleScroll);
+canvas.addEventListener('DOMMouseScroll',handleScroll);
+
+canvas.addEventListener('mousewheel', handleScroll);
 
 search.addEventListener('submit', function (evt) {
 	evt.preventDefault();
 
-	projects.forEach(function (element: Project) {
+	for (const element of projects) {
 		if (element.data.name.toLowerCase() == search.value) {
 			setCanvasPosition(element.data.x, element.data.y);
 			draw();
 			return;
 		}
-	});
+	}
 });
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,12 +152,12 @@ let lastMousePosition = {
  */
 function zoom(delta: number) {
 
-	factor = Math.pow(zoomSpeed, delta);
+	factor = Math.pow(config.zoomSpeed, delta);
 
 	// Clamp zoom
 	// NOTE: The scale will always be uniform.
 	const scaleX = (ctx as any).getScale().scaleX;
-	if ((scaleX >= maxZoom && factor > 1) || (scaleX <= minZoom && factor < 1))
+	if ((scaleX >= config.maxZoom && factor > 1) || (scaleX <= config.minZoom && factor < 1))
 		return;
 
 	setCanvasZoom(lastMousePosition.x, lastMousePosition.y, factor);
@@ -183,8 +195,8 @@ function setCanvasPosition(x: number, y: number) {
 function resetCanvas() {
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-	setCanvasPosition(centerOffsetPos, centerOffsetPos);
-	setCanvasZoom(canvas.width / 2.0, canvas.height / 2.0, startZoom);
+	setCanvasPosition(config.centerOffsetPos, config.centerOffsetPos);
+	setCanvasZoom(canvas.width / 2.0, canvas.height / 2.0, config.startZoom);
 }
 
 /**
@@ -231,9 +243,11 @@ function draw() {
 	ctx.save();
 	ctx.lineWidth = 10;
 	ctx.strokeStyle = Colors.LightGray;
+
+	// TODO: Check what cursus we are on 42 for instance does not have this.
 	for (let i = 0, radius = 170; i < 6; i++, radius += 165) {
 		ctx.beginPath();
-		ctx.arc(centerOffsetPos, centerOffsetPos, radius, Math.PI * 2, 0);
+		ctx.arc(config.centerOffsetPos, config.centerOffsetPos, radius, Math.PI * 2, 0);
 		ctx.stroke();
 		ctx.closePath();
 	}

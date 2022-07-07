@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 01:31:17 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/06 14:05:37 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/07 12:23:48 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ class Project {
 	data: ProjectData;
 	state: any;
 	fontSize: number;
+	selected: boolean;
 
 	constructor(rawProjectData: ProjectData) {
 		this.data = rawProjectData;
@@ -39,21 +40,18 @@ class Project {
 	 */
 	drawlines(): void {
 
-		ctx.save();
+		ctx.lineCap = "round";
 		for (let i = 0; i < this.lines.length; i++) {
 			const line = this.lines[i];
 			
-			ctx.save();
 			ctx.beginPath();
 				ctx.lineWidth = 10;
 				ctx.strokeStyle = line.color;
 				ctx.moveTo(line.origin[0], line.origin[1]);
 				ctx.lineTo(line.target[0], line.target[1]);
-			ctx.closePath()
-			ctx.stroke();
-			ctx.restore();
+				ctx.stroke();
+			ctx.closePath();
 		}
-		ctx.restore();
 	}
 
 	/**
@@ -62,11 +60,15 @@ class Project {
 	draw(): void {
 
 		// Background
+		ctx.save();
 		ctx.beginPath();
+			ctx.shadowBlur = this.selected ? 100 : 0;
+			ctx.shadowColor = this.state.background;
 			ctx.fillStyle = this.state.background;
 			ctx.arc(this.data.x, this.data.y, this.size, Math.PI * 2, 0);
 			ctx.fill();
 		ctx.closePath();
+		ctx.restore();
 
 		// Foreground
 		ctx.beginPath();
@@ -89,5 +91,10 @@ class Project {
 
 	intersects(x: number, y: number): boolean {
 		return isInsideCircle(x, y, this.data.x, this.data.y, this.size);
+	}
+
+	onClick(): void {
+		this.selected = true;
+		return;
 	}
 }
