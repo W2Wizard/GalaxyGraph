@@ -23,14 +23,14 @@ const ctx = canvas.getContext('2d');
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 /* Graph config */
-const canvasScale = isFirefox ? 1.25 : 2; // The upscaling of the canvas, higher is more resolution.
+const canvasScale = 2; // The upscaling of the canvas, higher is more resolution.
 
 const config = {
 	zoomSpeed: 1.1,						// Closer to 0 is slower.
 	mouseWheelSpeed: 0.01,				// Higher value is faster.
 	centerOffsetPos: 3000,				// The 'Center' of the galaxy graph, usually libft.
-	startZoom: canvasScale / 4.55,		// Bigger value further, smaller closer.
-	minZoom: 0.5,						// Smallest possible zoom.
+	startZoom: 1,						// Bigger value further, smaller closer.
+	minZoom: 0.45,						// Smallest possible zoom.
 	maxZoom: 10.0,						// Biggest possible zoom.
 }
 
@@ -90,12 +90,11 @@ canvas.addEventListener('mouseup', function (evt) {
 
 		const pos = getMousePositionTransformed(evt);
 
-		element.selected = false;
-		if (element.intersects(pos.x, pos.y)) {
-			element.onClick()
-			draw();
-		}
+		if (element.selected = element.intersects(pos.x, pos.y))
+			element.onClick();
 	});
+
+	draw();
 });
 
 canvas.addEventListener("mouseout", function () {
@@ -103,6 +102,11 @@ canvas.addEventListener("mouseout", function () {
 });
 
 const handleScroll = function (evt: any) {
+
+	if (lastMousePosition.x == 0 && lastMousePosition.y == 0) {
+		lastMousePosition = getMousePosition(evt);
+	}
+
 	evt.preventDefault();
 
 	const delta = evt.wheelDelta * config.mouseWheelSpeed;
@@ -111,8 +115,8 @@ const handleScroll = function (evt: any) {
 }
 
 // NOTE: Fuck firefox
-canvas.addEventListener('wheel',handleScroll);
-canvas.addEventListener('DOMMouseScroll',handleScroll);
+canvas.addEventListener('wheel', handleScroll);
+canvas.addEventListener('DOMMouseScroll', handleScroll);
 
 canvas.addEventListener('mousewheel', handleScroll);
 
@@ -137,8 +141,8 @@ let isDrag: boolean;
 let projects: Project[] = [];
 let factor = 0;
 let lastMousePosition = {
-	x: canvas.width / 2.0,
-	y: canvas.height / 2.0
+	x: 0,
+	y: 0
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -156,9 +160,11 @@ function zoom(delta: number) {
 
 	// Clamp zoom
 	// NOTE: The scale will always be uniform.
-	const scaleX = (ctx as any).getScale().scaleX;
-	if ((scaleX >= config.maxZoom && factor > 1) || (scaleX <= config.minZoom && factor < 1))
-		return;
+	let currentScale = (ctx as any).getScale().scaleX;
+	let newScale = currentScale * factor
+
+	if (newScale > config.maxZoom || newScale < config.minZoom)
+		return
 
 	setCanvasZoom(lastMousePosition.x, lastMousePosition.y, factor);
 	draw();
@@ -209,7 +215,7 @@ function getMousePosition(evt: MouseEvent) {
 	const x = (evt.offsetX || (evt.pageX - canvas.offsetLeft)) * canvasScale;
 	const y = (evt.offsetY || (evt.pageY - canvas.offsetTop)) * canvasScale;
 
-	return {x: x, y: y};
+	return { x: x, y: y };
 }
 
 /**
@@ -247,8 +253,10 @@ function draw() {
 	// TODO: Check what cursus we are on 42 for instance does not have this.
 	for (let i = 0, radius = 170; i < 6; i++, radius += 165) {
 		ctx.beginPath();
-		ctx.arc(config.centerOffsetPos, config.centerOffsetPos, radius, Math.PI * 2, 0);
-		ctx.stroke();
+		{
+			ctx.arc(config.centerOffsetPos, config.centerOffsetPos, radius, Math.PI * 2, 0);
+			ctx.stroke();
+		}
 		ctx.closePath();
 	}
 	ctx.restore();
