@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 01:30:53 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/06 17:46:33 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/09 17:39:02 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ type ProjectData = {
 }
 
 const ProjectSizes = {
-	BigProject:		75, // Difficult project.
+	BigProject:		66, // Difficult project.
 	Project:		50, // Normal project.
-	Rush:			50, // Rush project.
+	Rush:			25, // Rush project.
 	Exam:			25, // Exam project.
 	Piscine:		50, // Piscine project.
 	Module:			30, // A modular project.

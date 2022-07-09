@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 01:31:17 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/07 12:23:48 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/09 15:20:22 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ class Project {
 		ctx.save();
 		ctx.beginPath();
 		{
-			ctx.shadowBlur = this.selected ? 100 : 0;
+			ctx.shadowBlur = this.selected ? 180 : 0;
 			ctx.shadowColor = this.state.background;
 			ctx.strokeStyle = this.state.background;
 			ctx.fillStyle = this.state.foreground;

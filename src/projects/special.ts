@@ -1,39 +1,54 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   piscine.ts                                         :+:    :+:            */
+/*   special.ts                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/07/06 01:41:42 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/09 17:40:15 by lde-la-h      ########   odam.nl         */
+/*   Created: 2022/07/06 01:41:24 by W2Wizard      #+#    #+#                 */
+/*   Updated: 2022/07/09 17:36:20 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-class Piscine extends Project {
+/**
+ * A special project such as a Rush, Exam, ...
+ * Are rendered as rounded rectangles.
+ */
+ class SpecialProject extends Project {
 	constructor(rawProjectData: ProjectData) {
 		super(rawProjectData);
-		this.size = ProjectSizes.Piscine;
 	}
 
 	override draw(): void {
 
-		let width = 160;
-		let height = 64;
+		const width = 128;
+		const height = 48;
+		const borderThiccness = 25;
+		
+		let x = this.data.x - width / 2;
+		let y = this.data.y - height / 2;
+
+		let radius = 16;
+		if (width < 2 * radius) radius = width / 2;
+		if (height < 2 * radius) radius = height / 2;
 
 		ctx.save();
-		ctx.beginPath(); // Object
+		ctx.beginPath();
 		{
-			ctx.lineWidth = 7
+			ctx.lineWidth = borderThiccness;
 			ctx.strokeStyle = this.state.background;
 			ctx.fillStyle = this.state.foreground;
-			ctx.rect(this.data.x - width / 2, this.data.y - height / 2, width, height);
-			ctx.fill();
+			ctx.moveTo(x + radius, y);
+			ctx.arcTo(x + width, y, x + width, y + height, radius);
+			ctx.arcTo(x + width, y + height, x, y + height, radius);
+			ctx.arcTo(x, y + height, x, y, radius);
+			ctx.arcTo(x, y, x + width, y, radius);
 			ctx.stroke();
+			ctx.fill()
 		}
 		ctx.closePath();
 
-		ctx.beginPath(); // Text
+		ctx.beginPath();
 		{
 			ctx.textAlign = 'center';
 			ctx.fillStyle = this.state.textColor;

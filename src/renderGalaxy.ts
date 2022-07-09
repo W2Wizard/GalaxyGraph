@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 00:18:31 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/07 16:25:23 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/09 15:11:30 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,6 +273,8 @@ function init() {
 
 	// Fetch the data
 	APIData.forEach(function (element: ProjectData) {
+
+		console.log(element.name)
 
 		let newProject: Project;
 		switch (element.kind) {
