@@ -245,8 +245,8 @@ function draw() {
 
 	ctx.lineWidth = 10;
 
-	// Draw the lines of each project
 	ctx.save();
+	// Draw the lines of each project
 	for (const project of projects)
 		project.drawlines();
 	ctx.restore();
@@ -266,9 +266,10 @@ function draw() {
 	ctx.restore();
 	
 	// Draw projects
+	ctx.save();
 	for (const project of projects)
-	
-	project.draw();
+		project.draw();
+	ctx.restore();
 }
 
 function init() {
@@ -279,7 +280,10 @@ function init() {
 		let newProject: Project;
 		switch (element.kind) {
 
+			case "part_time":
 			case "big_project":
+			case "first_internship":
+			case "second_internship":
 				newProject = new Project(element);
 				newProject.size = ProjectSizes.BigProject;
 				break;

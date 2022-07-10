@@ -21,12 +21,13 @@ class Piscine extends Project {
 
 		let width = 160;
 		let height = 52;
+		
+		ctx.save();
+		ctx.lineWidth = 5;
 
 		// Body
-		ctx.save();
 		ctx.beginPath();
 		{
-			ctx.lineWidth = 5;
 			ctx.strokeStyle = this.state.background;
 			ctx.fillStyle = this.state.foreground;
 			ctx.rect(this.data.x - width / 2, this.data.y - height / 2, width, height);
@@ -34,9 +35,10 @@ class Piscine extends Project {
 			ctx.stroke();
 		}
 		ctx.closePath();
-
-		this.drawTitle();
 		ctx.restore();
+
+		// Name
+		this.drawTitle();
 	}
 
 	override drawTitle(): void {

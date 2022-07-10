@@ -24,7 +24,6 @@
 
 		const width = 128;
 		const height = 48;
-		const borderThiccness = 15;
 		
 		const x = this.data.x - width / 2;
 		const y = this.data.y - height / 2;
@@ -33,10 +32,8 @@
 		if (width < 2 * radius) radius = width / 2;
 		if (height < 2 * radius) radius = height / 2;
 
-		ctx.save();
 		ctx.beginPath();
 		{
-			ctx.lineWidth = borderThiccness;
 			ctx.shadowBlur = this.selected ? 180 : 0;
 			ctx.shadowColor = this.state.background;
 			ctx.strokeStyle = this.state.background;

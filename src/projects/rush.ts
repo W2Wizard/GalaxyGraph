@@ -21,6 +21,7 @@ class Rush extends SpecialProject {
 
 	override draw(): void {
 		super.draw();
+		this.drawTitle();
 	}
 
 	override drawTitle(): void {

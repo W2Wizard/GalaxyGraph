@@ -1,3 +1,4 @@
 IntraGarbage
 node_modules
 build
+*.txt

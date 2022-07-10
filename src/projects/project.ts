@@ -45,7 +45,6 @@ class Project {
 
 			ctx.beginPath();
 			{
-				ctx.lineWidth = 10;
 				ctx.strokeStyle = this.state.background;
 				ctx.moveTo(line.origin[0], line.origin[1]);
 				ctx.lineTo(line.target[0], line.target[1]);
@@ -60,7 +59,6 @@ class Project {
 	 */
 	draw(): void {
 		// Background
-		ctx.save();
 		ctx.beginPath();
 		{
 			ctx.shadowBlur = this.selected ? 180 : 0;
@@ -71,11 +69,8 @@ class Project {
 			ctx.fill();
 		}
 		ctx.closePath();
-		ctx.restore();
 
-		ctx.save()
 		this.drawTitle();
-		ctx.restore()
 	}
 
 	drawTitle(): void {

@@ -47,7 +47,7 @@ const ProjectSizes = {
 	Rush:			25, // Rush project.
 	Exam:			25, // Exam project.
 	Piscine:		50, // Piscine project.
-	Module:			25, // A modular project.
+	Module:			28, // A modular project.
 };
 
 const ProjectStatus = {
