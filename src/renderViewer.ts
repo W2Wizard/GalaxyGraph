@@ -100,34 +100,18 @@ canvas.addEventListener("mouseout", function () {
 });
 
 const handleScroll = function (evt: any) {
-
-	if (lastMousePosition.x == 0 && lastMousePosition.y == 0) {
-		lastMousePosition = getMousePosition(evt);
-	}
-
 	evt.preventDefault();
+
+	if (lastMousePosition.x == 0 && lastMousePosition.y == 0)
+		lastMousePosition = getMousePosition(evt);
 
 	const delta = evt.wheelDelta * config.mouseWheelSpeed;
 	if (delta)
 		zoom(delta);
 }
 
-// NOTE: Fuck firefox
 canvas.addEventListener('wheel', handleScroll);
-canvas.addEventListener('DOMMouseScroll', handleScroll);
 canvas.addEventListener('mousewheel', handleScroll);
-
-search.addEventListener('submit', function (evt) {
-	evt.preventDefault();
-
-	for (const element of projects) {
-		if (element.data.name.toLowerCase() == search.value) {
-			setCanvasPosition(element.data.x, element.data.y);
-			draw();
-			return;
-		}
-	}
-});
 
 ////////////////////////////////////////////////////////////////////////////////
 // Globals
@@ -245,8 +229,8 @@ function draw() {
 
 	ctx.lineWidth = 10;
 
-	ctx.save();
 	// Draw the lines of each project
+	ctx.save();
 	for (const project of projects)
 		project.drawlines();
 	ctx.restore();
@@ -305,9 +289,18 @@ function init() {
 				break;
 		}
 
+		const name = element.name.toLowerCase();
+
 		// HACK: Since IntraAPI V2 does not specifiy this kind.
-		if (element.name.toLowerCase().includes("module"))
+		if (name.includes("module"))
+		{
+			console.log(name)
+			// Nor any way of marking a final module ...
 			newProject = new Module(element);
+			if (name.endsWith("08")) {
+				newProject.size = ProjectSizes.Project;
+			}
+		}
 
 		projects.push(newProject);
 	});

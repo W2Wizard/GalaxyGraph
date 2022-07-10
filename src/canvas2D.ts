@@ -112,3 +112,12 @@ function getCanvasTranslationOffsets() {
 function isInsideCircle(x: number, y: number, cx: number, cy: number, rad: number) {
 	return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= rad * rad;
 }
+
+function isInsideRectangle(x: number, y: number, rx: number, ry: number, width: number, height: number,) {
+	const x1 = rx - width / 2;
+	const y1 = ry - height / 2;
+
+	if (x < x1 || y < y1 || x > x1 + width || y > y1 + height)
+		return false;
+	return true;
+}

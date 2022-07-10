@@ -15,22 +15,24 @@
  * Are rendered as rounded rectangles.
  */
  class SpecialProject extends Project {
+
+	width: number = 128;
+	height: number = 48;
+	x: number;
+	y: number;
+
 	constructor(rawProjectData: ProjectData) {
 		super(rawProjectData);
 		this.fontSizeOffset = 75
+		this.x = this.data.x - this.width / 2;
+		this.y = this.data.y - this.height / 2;
 	}
 
 	override draw(): void {
 
-		const width = 128;
-		const height = 48;
-		
-		const x = this.data.x - width / 2;
-		const y = this.data.y - height / 2;
-
 		let radius = 16;
-		if (width < 2 * radius) radius = width / 2;
-		if (height < 2 * radius) radius = height / 2;
+		if (this.width < 2 * radius) radius = this.width / 2;
+		if (this.height < 2 * radius) radius = this.height / 2;
 
 		ctx.beginPath();
 		{
@@ -38,11 +40,11 @@
 			ctx.shadowColor = this.state.background;
 			ctx.strokeStyle = this.state.background;
 			ctx.fillStyle = this.state.foreground;
-			ctx.moveTo(x + radius, y);
-			ctx.arcTo(x + width, y, x + width, y + height, radius);
-			ctx.arcTo(x + width, y + height, x, y + height, radius);
-			ctx.arcTo(x, y + height, x, y, radius);
-			ctx.arcTo(x, y, x + width, y, radius);
+			ctx.moveTo(this.x + radius, this.y);
+			ctx.arcTo(this.x + this.width, this.y, this.x + this.width, this.y + this.height, radius);
+			ctx.arcTo(this.x + this.width, this.y + this.height, this.x, this.y + this.height, radius);
+			ctx.arcTo(this.x, this.y + this.height, this.x, this.y, radius);
+			ctx.arcTo(this.x, this.y, this.x + this.width, this.y, radius);
 			ctx.stroke();
 			ctx.fill()
 		}

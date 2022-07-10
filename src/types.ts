@@ -13,7 +13,7 @@
 const Colors = {
 	White:		"#ffffff",
 	Red:		"#CC6256",
-	Cyan:		"#00BABC",
+	Cyan:		"#00BABC", // #00A8C1
 	Gray:		"#46484C",
 	LightGray:	"#6F7278",
 	Orange:		"#FFA300",

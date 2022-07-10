@@ -11,16 +11,20 @@
 /* ************************************************************************** */
 
 class Piscine extends Project {
+	width: number = 160;
+	height: number = 52;
+	x: number;
+	y: number;
+
 	constructor(rawProjectData: ProjectData) {
 		super(rawProjectData);
 		this.size = ProjectSizes.Piscine;
 		this.fontSizeOffset = 20;
+		this.x = this.data.x - this.width / 2;
+		this.y = this.data.y - this.height / 2;
 	}
 
 	override draw(): void {
-
-		let width = 160;
-		let height = 52;
 		
 		ctx.save();
 		ctx.lineWidth = 5;
@@ -28,9 +32,11 @@ class Piscine extends Project {
 		// Body
 		ctx.beginPath();
 		{
+			ctx.shadowBlur = this.selected ? 180 : 0;
+			ctx.shadowColor = ctx.strokeStyle = this.state.background;
 			ctx.strokeStyle = this.state.background;
 			ctx.fillStyle = this.state.foreground;
-			ctx.rect(this.data.x - width / 2, this.data.y - height / 2, width, height);
+			ctx.rect(this.x, this.y, this.width, this.height);
 			ctx.fill();
 			ctx.stroke();
 		}
@@ -46,6 +52,6 @@ class Piscine extends Project {
 	}
 
 	override intersects(x: number, y: number): boolean {
-		return super.intersects(x, y);
+		return isInsideRectangle(x, y, this.data.x, this.data.y, this.width, this.height);
 	}
 }
