@@ -10,3 +10,7 @@
 
 A recreation of the 'Holygraph' used on the intranet. The goal of this project is to
 introduce a new graph for the Improve Intra project and build a cursus editor for staff.
+
+---
+
+![image](https://user-images.githubusercontent.com/63303990/178143182-09b83082-2d41-44fd-973d-c9545b49ff4f.png)
