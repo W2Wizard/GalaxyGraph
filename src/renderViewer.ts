@@ -141,11 +141,12 @@ search.onchange = (evt) => {
 		if (element.data.name == search.value)
 		{
 			setCanvasPosition(element.data.x, element.data.y);
-
-			ctx.translate(element.data.x, element.data.y);
-			ctx.scale(8, 8);
-			ctx.translate(-element.data.x, -element.data.y);
+			setCanvasZoom(element.data.x, element.data.y, 8);
+			element.onClick();
+			element.selected = true;
 			draw();
+
+			search.value = "";
 			return;			
 		}
 	});
