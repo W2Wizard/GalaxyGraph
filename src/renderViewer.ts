@@ -292,14 +292,12 @@ function init() {
 		const name = element.name.toLowerCase();
 
 		// HACK: Since IntraAPI V2 does not specifiy this kind.
-		if (name.includes("module"))
+		if (name.includes("module") && !name.includes("old-cpp"))
 		{
-			console.log(name)
 			// Nor any way of marking a final module ...
 			newProject = new Module(element);
-			if (name.endsWith("08")) {
+			if (name.endsWith("08"))
 				newProject.size = ProjectSizes.Project;
-			}
 		}
 
 		projects.push(newProject);

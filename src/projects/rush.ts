@@ -29,6 +29,6 @@ class Rush extends SpecialProject {
 	}
 
 	override intersects(x: number, y: number): boolean {
-		return super.intersects(x, y);
+		return isInsideRectangle(x, y, this.data.x, this.data.y, this.width, this.height);
 	}
 }
