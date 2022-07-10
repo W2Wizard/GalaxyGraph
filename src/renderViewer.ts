@@ -18,6 +18,7 @@ const headerHeight = parseInt(getComputedStyle(document.documentElement).getProp
 
 const canvas = document.getElementById('galaxy-graph') as HTMLCanvasElement;
 const search = document.getElementById('graph-search') as HTMLInputElement;
+const projectData = document.getElementById('project-datalist') as HTMLDataListElement;
 const ctx = canvas.getContext('2d');
 
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
@@ -68,13 +69,30 @@ canvas.addEventListener('mousedown', function (evt) {
 	isDrag = false;
 });
 
+async function checkForCursor(pos: any) {
+	for (const project of projects) {
+
+		const dist = Math.sqrt((project.data.x - pos.x) ** 2 + (project.data.y - pos.y) ** 2);
+
+		if (dist > 500) continue;
+		if (project.intersects(pos.x, pos.y)) {
+			canvas.style.cursor = "pointer";
+			break;
+		}
+		canvas.style.cursor = "default";
+	}
+}
+
 canvas.addEventListener('mousemove', function (evt) {
 
 	lastMousePosition = getMousePosition(evt);
 	isDrag = true;
 
 	if (!dragStart)
+	{
+		checkForCursor(getMousePositionTransformed(evt));
 		return;
+	}
 
 	const pt = (ctx as any).transformPoint(lastMousePosition.x, lastMousePosition.y);
 	ctx.translate(pt.x - dragStart.x, pt.y - dragStart.y);
@@ -114,6 +132,26 @@ canvas.addEventListener('wheel', handleScroll);
 canvas.addEventListener('mousewheel', handleScroll);
 
 ////////////////////////////////////////////////////////////////////////////////
+// Editor
+////////////////////////////////////////////////////////////////////////////////
+
+search.onchange = (evt) => {
+	projects.forEach(function (element: Project) {
+
+		if (element.data.name == search.value)
+		{
+			setCanvasPosition(element.data.x, element.data.y);
+
+			ctx.translate(element.data.x, element.data.y);
+			ctx.scale(8, 8);
+			ctx.translate(-element.data.x, -element.data.y);
+			draw();
+			return;			
+		}
+	});
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Globals
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -147,7 +185,9 @@ function zoom(delta: number) {
 	if (newScale > config.maxZoom || newScale < config.minZoom)
 		return
 
-	setCanvasZoom(lastMousePosition.x, lastMousePosition.y, factor);
+
+	const point = (ctx as any).transformPoint(lastMousePosition.x, lastMousePosition.y);
+	setCanvasZoom(point.x,point.y, factor);
 	draw();
 }
 
@@ -158,12 +198,9 @@ function zoom(delta: number) {
  * @param amount The zoom amount, bigger value further (1), smaller closer (0)
  */
 function setCanvasZoom(x: number, y: number, amount: number) {
-
-	const point = (ctx as any).transformPoint(x, y);
-
-	ctx.translate(point.x, point.y);
+	ctx.translate(x, y);
 	ctx.scale(amount, amount);
-	ctx.translate(-point.x, -point.y);
+	ctx.translate(-x, -y);
 }
 
 /**
@@ -183,7 +220,9 @@ function resetCanvas() {
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 
 	setCanvasPosition(config.centerOffsetPos, config.centerOffsetPos);
-	setCanvasZoom(canvas.width / 2.0, canvas.height / 2.0, config.startZoom);
+
+	const point = (ctx as any).transformPoint(canvas.width / 2.0, canvas.height / 2.0);
+	setCanvasZoom(point.x, point.y, config.startZoom);
 }
 
 /**
@@ -299,6 +338,10 @@ function init() {
 			if (name.endsWith("08"))
 				newProject.size = ProjectSizes.Project;
 		}
+
+		let option = document.createElement('option');
+		option.value = element.name;
+		projectData.appendChild(option);
 
 		projects.push(newProject);
 	});
