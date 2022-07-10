@@ -12,7 +12,7 @@
 
 const APIData = [
 	{
-	  "state": "done",
+	  "state": "available",
 	  "final_mark": 100,
 	  "id": 864,
 	  "kind": "project",
@@ -28,7 +28,7 @@ const APIData = [
 	  "slug": "cpp-module-01"
 	},
 	{
-	  "state": "done",
+	  "state": "fail",
 	  "final_mark": 115,
 	  "id": 5339,
 	  "kind": "project",
@@ -60,7 +60,7 @@ const APIData = [
 	  "slug": "so_long"
 	},
 	{
-	  "state": "done",
+	  "state": "not_recommended",
 	  "final_mark": 125,
 	  "id": 853,
 	  "kind": "project",

@@ -45,8 +45,6 @@ window.onload = function () {
 	canvas.width = canvasScale * (window.innerWidth - 16);
 	canvas.height = canvasScale * (window.innerHeight - headerHeight - 16);
 
-	console.log(navigator);
-
 	init();
 	resetCanvas();
 	draw();
@@ -117,7 +115,6 @@ const handleScroll = function (evt: any) {
 // NOTE: Fuck firefox
 canvas.addEventListener('wheel', handleScroll);
 canvas.addEventListener('DOMMouseScroll', handleScroll);
-
 canvas.addEventListener('mousewheel', handleScroll);
 
 search.addEventListener('submit', function (evt) {
@@ -246,11 +243,18 @@ function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.restore();
 
-	ctx.save();
 	ctx.lineWidth = 10;
-	ctx.strokeStyle = Colors.LightGray;
 
-	// TODO: Check what cursus we are on 42 for instance does not have this.
+	// Draw the lines of each project
+	ctx.save();
+	for (const project of projects)
+		project.drawlines();
+	ctx.restore();
+
+	// Draw The core ranks
+	// TODO: Check what cursus we are on, 42 for instance does not have this. Only 42Cursus.
+	ctx.save();
+	ctx.strokeStyle = Colors.LightGray;
 	for (let i = 0, radius = 170; i < 6; i++, radius += 165) {
 		ctx.beginPath();
 		{
@@ -260,21 +264,17 @@ function draw() {
 		ctx.closePath();
 	}
 	ctx.restore();
-
+	
+	// Draw projects
 	for (const project of projects)
-		project.drawlines();
-
-	for (const project of projects)
-		project.draw();
-
+	
+	project.draw();
 }
 
 function init() {
 
 	// Fetch the data
 	APIData.forEach(function (element: ProjectData) {
-
-		console.log(element.name)
 
 		let newProject: Project;
 		switch (element.kind) {
@@ -304,11 +304,6 @@ function init() {
 		// HACK: Since IntraAPI V2 does not specifiy this kind.
 		if (element.name.toLowerCase().includes("module"))
 			newProject = new Module(element);
-
-		// HACK: Because 42 is so competent they HARDCODE the size of transendence in intra ...
-		else if (element.name == "ft_transendence") {
-			newProject.size = ProjectSizes.BigProject;
-		}
 
 		projects.push(newProject);
 	});

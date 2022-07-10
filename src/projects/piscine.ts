@@ -14,17 +14,19 @@ class Piscine extends Project {
 	constructor(rawProjectData: ProjectData) {
 		super(rawProjectData);
 		this.size = ProjectSizes.Piscine;
+		this.fontSizeOffset = 20;
 	}
 
 	override draw(): void {
 
 		let width = 160;
-		let height = 64;
+		let height = 52;
 
+		// Body
 		ctx.save();
-		ctx.beginPath(); // Object
+		ctx.beginPath();
 		{
-			ctx.lineWidth = 7
+			ctx.lineWidth = 5;
 			ctx.strokeStyle = this.state.background;
 			ctx.fillStyle = this.state.foreground;
 			ctx.rect(this.data.x - width / 2, this.data.y - height / 2, width, height);
@@ -33,16 +35,12 @@ class Piscine extends Project {
 		}
 		ctx.closePath();
 
-		ctx.beginPath(); // Text
-		{
-			ctx.textAlign = 'center';
-			ctx.fillStyle = this.state.textColor;
-			ctx.font = `normal bold ${this.fontSize}px Segoe UI`;
-			ctx.fillText(this.data.name, this.data.x, this.data.y + (this.fontSize / 2.0));
-			ctx.fill();
-		}
-		ctx.closePath();
+		this.drawTitle();
 		ctx.restore();
+	}
+
+	override drawTitle(): void {
+		super.drawTitle();
 	}
 
 	override intersects(x: number, y: number): boolean {

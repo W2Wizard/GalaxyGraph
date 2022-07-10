@@ -21,6 +21,11 @@ class Exam extends SpecialProject {
 
 	override draw(): void {
 		super.draw();
+		this.drawTitle();
+	}
+
+	override drawTitle(): void {
+		super.drawTitle();
 	}
 
 	override intersects(x: number, y: number): boolean {

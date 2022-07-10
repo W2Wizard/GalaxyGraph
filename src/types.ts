@@ -47,13 +47,14 @@ const ProjectSizes = {
 	Rush:			25, // Rush project.
 	Exam:			25, // Exam project.
 	Piscine:		50, // Piscine project.
-	Module:			30, // A modular project.
+	Module:			25, // A modular project.
 };
 
 const ProjectStatus = {
-	"done": 		{foreground: Colors.Cyan, background: Colors.Cyan, textColor: Colors.White},
-	"fail": 		{foreground: Colors.Red, background: Colors.Red, textColor: Colors.White},
-	"available": 	{foreground: Colors.Gray, background: Colors.White, textColor: Colors.White},
-	"unavailable":	{foreground: Colors.Gray, background: Colors.LightGray, textColor: Colors.LightGray},
-	"in_progress":	{foreground: Colors.Gray, background: Colors.Cyan, textColor: Colors.Cyan},
+	"done": 			{foreground: Colors.Cyan, background: Colors.Cyan, textColor: Colors.White},
+	"fail": 			{foreground: Colors.Red, background: Colors.Red, textColor: Colors.White},
+	"available": 		{foreground: Colors.Gray, background: Colors.White, textColor: Colors.White},
+	"unavailable":		{foreground: Colors.Gray, background: Colors.LightGray, textColor: Colors.LightGray},
+	"in_progress":		{foreground: Colors.Gray, background: Colors.Cyan, textColor: Colors.Cyan},
+	"not_recommended":	{foreground: Colors.Gray, background: Colors.Orange, textColor: Colors.Orange},
 }

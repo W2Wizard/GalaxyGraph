@@ -17,16 +17,17 @@
  class SpecialProject extends Project {
 	constructor(rawProjectData: ProjectData) {
 		super(rawProjectData);
+		this.fontSizeOffset = 75
 	}
 
 	override draw(): void {
 
 		const width = 128;
 		const height = 48;
-		const borderThiccness = 25;
+		const borderThiccness = 15;
 		
-		let x = this.data.x - width / 2;
-		let y = this.data.y - height / 2;
+		const x = this.data.x - width / 2;
+		const y = this.data.y - height / 2;
 
 		let radius = 16;
 		if (width < 2 * radius) radius = width / 2;
@@ -36,6 +37,8 @@
 		ctx.beginPath();
 		{
 			ctx.lineWidth = borderThiccness;
+			ctx.shadowBlur = this.selected ? 180 : 0;
+			ctx.shadowColor = this.state.background;
 			ctx.strokeStyle = this.state.background;
 			ctx.fillStyle = this.state.foreground;
 			ctx.moveTo(x + radius, y);
@@ -47,17 +50,10 @@
 			ctx.fill()
 		}
 		ctx.closePath();
+	}
 
-		ctx.beginPath();
-		{
-			ctx.textAlign = 'center';
-			ctx.fillStyle = this.state.textColor;
-			ctx.font = `normal bold ${this.fontSize}px Segoe UI`;
-			ctx.fillText(this.data.name, this.data.x, this.data.y + (this.fontSize / 2.0));
-			ctx.fill();
-		}
-		ctx.closePath();
-		ctx.restore();
+	override drawTitle(): void {
+		super.drawTitle();
 	}
 
 	override intersects(x: number, y: number): boolean {

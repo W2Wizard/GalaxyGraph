@@ -23,6 +23,10 @@ class Module extends Project {
 		super.draw();
 	}
 
+	override drawTitle(): void {
+		super.drawTitle();
+	}
+
 	override intersects(x: number, y: number): boolean {
 		return super.intersects(x, y);
 	}

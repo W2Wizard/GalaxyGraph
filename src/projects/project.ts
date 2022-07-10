@@ -12,25 +12,26 @@
 
 class Project {
 
-	size: number;
-	lines: any[] = [];
-	data: ProjectData;
-	state: any;
-	fontSize: number;
-	selected: boolean;
-	firstDraw: boolean = true;
+	size: number;				// Size of the project
+	lines: any[] = [];			// The project's lines
+	data: ProjectData;			// The API data of the project
+	state: any;					// The current project state.
+	fontSize: number;			// Default starting size of the font.
+	fontSizeOffset: number;		// Font size offset modifier to alter size of font.
+	selected: boolean;			// Is the project selected ?
+	firstDraw: boolean = true;	// Did we already draw the font.
 
 	constructor(rawProjectData: ProjectData) {
 		this.data = rawProjectData;
 		this.size = ProjectSizes.Project;
+		this.fontSize = 20
+		this.fontSizeOffset = 0;
+		this.state = ProjectStatus[this.data.state];
 
 		for (let i = 0; i < this.data.by.length; i++) {
 			const points = this.data.by[i].points;
-			this.lines.push({ origin: points[0], target: points[1], color: Colors.LightGray });
+			this.lines.push({ origin: points[0], target: points[1]});
 		}
-
-		this.state = ProjectStatus[this.data.state];
-		this.fontSize = 18
 	}
 
 	/**
@@ -45,7 +46,7 @@ class Project {
 			ctx.beginPath();
 			{
 				ctx.lineWidth = 10;
-				ctx.strokeStyle = line.color;
+				ctx.strokeStyle = this.state.background;
 				ctx.moveTo(line.origin[0], line.origin[1]);
 				ctx.lineTo(line.target[0], line.target[1]);
 				ctx.stroke();
@@ -63,39 +64,46 @@ class Project {
 		ctx.beginPath();
 		{
 			ctx.shadowBlur = this.selected ? 180 : 0;
-			ctx.shadowColor = this.state.background;
-			ctx.strokeStyle = this.state.background;
+			ctx.shadowColor = ctx.strokeStyle = this.state.background;
 			ctx.fillStyle = this.state.foreground;
 			ctx.arc(this.data.x, this.data.y, this.size, Math.PI * 2, 0);
 			ctx.stroke();
 			ctx.fill();
 		}
 		ctx.closePath();
+		ctx.restore();
 
-		// Title
-		// TODO: Make this a override function.
+		ctx.save()
+		this.drawTitle();
+		ctx.restore()
+	}
+
+	drawTitle(): void {
 		ctx.beginPath();
 		{
 			this.setFontProperties(this.firstDraw)
-			ctx.fillText(this.data.name, this.data.x, this.data.y + (this.fontSize / 2.0));
+			
+			// NOTE: Slight offset up to make it look more centric
+			ctx.fillText(this.data.name, this.data.x, this.data.y + (this.fontSize / 2.0) - 2);
 			ctx.fill();
 		}
 		ctx.closePath();
-		ctx.restore();
-
 		this.firstDraw = false
+	}
+
+	onClick(): void {
+		return;
 	}
 
 	intersects(x: number, y: number): boolean {
 		return isInsideCircle(x, y, this.data.x, this.data.y, this.size);
 	}
 
-	onClick(): void {
-		this.selected = true;
-		return;
-	}
-
 	///////////////////////////////////////////////////////////////////////////
+
+	setCurrentFont() {
+		ctx.font = `normal bold ${this.fontSize}px Segoe UI`;
+	}
 
 	setFontProperties(calculateFontSize: boolean) {
 		ctx.textAlign = 'center';
@@ -106,23 +114,17 @@ class Project {
 			return;
 		}
 		
-		const circleWidth = this.size * 2;
+		const width = this.size * 2;
 		
 		for (;;) {
 			this.setCurrentFont()
+			
 			const bounds = ctx.measureText(this.data.name);
-
-			if (circleWidth > bounds.width) {
-				this.fontSize -= 1;
+			if (width > bounds.width - this.fontSizeOffset)
 				break;
-			}
+
 			this.fontSize--;
 		}
-
 		this.setCurrentFont();
-	}
-
-	setCurrentFont() {
-		ctx.font = `normal bold ${this.fontSize}px Segoe UI`;
 	}
 }
