@@ -13,4 +13,21 @@ introduce a new graph for the Improve Intra project and build a cursus editor fo
 
 ---
 
+# How to build
+
+Though this project uses typescript, its intent is to be used with plain javascript in a product. TS is only used for development and the usage of auto-complete.
+
+``` bash
+npm install
+npm run build
+```
+
+or
+
+```bash
+tsc tsconfig.json
+```
+
+Then open the `html.index` in the www folder.
+
 ![image](https://user-images.githubusercontent.com/63303990/178143182-09b83082-2d41-44fd-973d-c9545b49ff4f.png)
