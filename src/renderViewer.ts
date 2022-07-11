@@ -72,9 +72,9 @@ canvas.addEventListener('mousedown', function (evt) {
 async function checkForCursor(pos: any) {
 	for (const project of projects) {
 
-		const dist = Math.sqrt((project.data.x - pos.x) ** 2 + (project.data.y - pos.y) ** 2);
+		const dist = (project.data.x - pos.x) ** 2 + (project.data.y - pos.y) ** 2;
 
-		if (dist > 500) continue;
+		if (dist > 500 ** 2) continue;
 		if (project.intersects(pos.x, pos.y)) {
 			canvas.style.cursor = "pointer";
 			break;
@@ -138,8 +138,7 @@ canvas.addEventListener('mousewheel', handleScroll);
 search.onchange = (evt) => {
 	projects.forEach(function (element: Project) {
 
-		if (element.data.name == search.value)
-		{
+		if (element.data.name == search.value) {
 			setCanvasPosition(element.data.x, element.data.y);
 			setCanvasZoom(element.data.x, element.data.y, 8);
 			element.onClick();
@@ -147,7 +146,7 @@ search.onchange = (evt) => {
 			draw();
 
 			search.value = "";
-			return;			
+			return;
 		}
 	});
 }
@@ -170,9 +169,9 @@ let lastMousePosition = {
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * 
- * @param delta 
- * @returns 
+ *
+ * @param delta
+ * @returns
  */
 function zoom(delta: number) {
 
@@ -188,7 +187,7 @@ function zoom(delta: number) {
 
 
 	const point = (ctx as any).transformPoint(lastMousePosition.x, lastMousePosition.y);
-	setCanvasZoom(point.x,point.y, factor);
+	setCanvasZoom(point.x, point.y, factor);
 	draw();
 }
 
@@ -288,7 +287,7 @@ function draw() {
 		ctx.closePath();
 	}
 	ctx.restore();
-	
+
 	// Draw projects
 	ctx.save();
 	for (const project of projects)
@@ -332,8 +331,7 @@ function init() {
 		const name = element.name.toLowerCase();
 
 		// HACK: Since IntraAPI V2 does not specifiy this kind.
-		if (name.includes("module") && !name.includes("old-cpp"))
-		{
+		if (name.includes("module") && !name.includes("old-cpp")) {
 			// Nor any way of marking a final module ...
 			newProject = new Module(element);
 			if (name.endsWith("08"))
