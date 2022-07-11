@@ -58,3 +58,8 @@ const ProjectStatus = {
 	"in_progress":		{foreground: Colors.Gray, background: Colors.Cyan, textColor: Colors.Cyan},
 	"not_recommended":	{foreground: Colors.Gray, background: Colors.Orange, textColor: Colors.Orange},
 }
+
+interface MousePos {
+	x: number;
+	y: number;
+}

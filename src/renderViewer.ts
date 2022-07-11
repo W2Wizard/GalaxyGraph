@@ -19,7 +19,7 @@ const headerHeight = parseInt(getComputedStyle(document.documentElement).getProp
 const canvas = document.getElementById('galaxy-graph') as HTMLCanvasElement;
 const search = document.getElementById('graph-search') as HTMLInputElement;
 const projectData = document.getElementById('project-datalist') as HTMLDataListElement;
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
@@ -69,7 +69,7 @@ canvas.addEventListener('mousedown', function (evt) {
 	isDrag = false;
 });
 
-async function checkForCursor(pos: any) {
+async function checkForCursor(pos: MousePos) {
 	for (const project of projects) {
 
 		const dist = (project.data.x - pos.x) ** 2 + (project.data.y - pos.y) ** 2;
@@ -88,8 +88,7 @@ canvas.addEventListener('mousemove', function (evt) {
 	lastMousePosition = getMousePosition(evt);
 	isDrag = true;
 
-	if (!dragStart)
-	{
+	if (!dragStart) {
 		checkForCursor(getMousePositionTransformed(evt));
 		return;
 	}
@@ -104,7 +103,7 @@ canvas.addEventListener('mouseup', function (evt) {
 
 	projects.forEach(function (element: Project) {
 
-		const pos = getMousePositionTransformed(evt);
+		const pos: MousePos = getMousePositionTransformed(evt);
 
 		if (element.selected = element.intersects(pos.x, pos.y))
 			element.onClick();
@@ -243,7 +242,7 @@ function getMousePosition(evt: MouseEvent) {
  * @param evt The event.
  * @returns The mouse position.
  */
-function getMousePositionTransformed(evt: MouseEvent) {
+function getMousePositionTransformed(evt: MouseEvent): MousePos {
 
 	const mousePos = getMousePosition(evt)
 	const transPos = (ctx as any).transformPoint(mousePos.x, mousePos.y);
