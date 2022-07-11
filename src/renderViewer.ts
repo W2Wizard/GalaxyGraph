@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   renderGalaxy.ts                                    :+:    :+:            */
+/*   renderViewer.ts                                    :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 00:18:31 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/09 15:11:30 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/11 15:33:41 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ const ctx = canvas.getContext('2d');
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 /* Graph config */
-const canvasScale = 2; // The upscaling of the canvas, higher is more resolution.
+const canvasScale = isFirefox ? 1 : 2; // The upscaling of the canvas, higher is more resolution.
 
 const config = {
 	zoomSpeed: 1.1,						// Closer to 0 is slower.

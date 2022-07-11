@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 01:31:17 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/09 15:20:22 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/11 15:32:21 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ class Project {
 			ctx.arc(this.data.x, this.data.y, this.size, Math.PI * 2, 0);
 			ctx.stroke();
 			ctx.fill();
+			ctx.shadowBlur = 0;
 		}
 		ctx.closePath();
 
