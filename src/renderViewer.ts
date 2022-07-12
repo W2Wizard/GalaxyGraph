@@ -19,7 +19,7 @@ const headerHeight = parseInt(getComputedStyle(document.documentElement).getProp
 const canvas = document.getElementById('galaxy-graph') as HTMLCanvasElement;
 const search = document.getElementById('graph-search') as HTMLInputElement;
 const projectData = document.getElementById('project-datalist') as HTMLDataListElement;
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
@@ -33,6 +33,7 @@ const config = {
 	startZoom: 1,						// Bigger value further, smaller closer.
 	minZoom: 0.45,						// Smallest possible zoom.
 	maxZoom: 10.0,						// Biggest possible zoom.
+	interactDistance: 500,				// Distance at which project is considered active, eg. when the curser hovers over a project
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,12 +70,12 @@ canvas.addEventListener('mousedown', function (evt) {
 	isDrag = false;
 });
 
-async function checkForCursor(pos: any) {
+async function checkForCursor(pos: Point) {
 	for (const project of projects) {
 
-		const dist = Math.sqrt((project.data.x - pos.x) ** 2 + (project.data.y - pos.y) ** 2);
+		const dist = (project.data.x - pos.x) ** 2 + (project.data.y - pos.y) ** 2;
 
-		if (dist > 500) continue;
+		if (dist > config.interactDistance ** 2) continue;
 		if (project.intersects(pos.x, pos.y)) {
 			canvas.style.cursor = "pointer";
 			break;
@@ -88,8 +89,7 @@ canvas.addEventListener('mousemove', function (evt) {
 	lastMousePosition = getMousePosition(evt);
 	isDrag = true;
 
-	if (!dragStart)
-	{
+	if (!dragStart) {
 		checkForCursor(getMousePositionTransformed(evt));
 		return;
 	}
@@ -104,7 +104,7 @@ canvas.addEventListener('mouseup', function (evt) {
 
 	projects.forEach(function (element: Project) {
 
-		const pos = getMousePositionTransformed(evt);
+		const pos: Point = getMousePositionTransformed(evt);
 
 		if (element.selected = element.intersects(pos.x, pos.y))
 			element.onClick();
@@ -138,8 +138,7 @@ canvas.addEventListener('mousewheel', handleScroll);
 search.onchange = (evt) => {
 	projects.forEach(function (element: Project) {
 
-		if (element.data.name == search.value)
-		{
+		if (element.data.name == search.value) {
 			setCanvasPosition(element.data.x, element.data.y);
 			setCanvasZoom(element.data.x, element.data.y, 8);
 			element.onClick();
@@ -147,7 +146,7 @@ search.onchange = (evt) => {
 			draw();
 
 			search.value = "";
-			return;			
+			return;
 		}
 	});
 }
@@ -160,7 +159,7 @@ let dragStart: DOMPoint;
 let isDrag: boolean;
 let projects: Project[] = [];
 let factor = 0;
-let lastMousePosition = {
+let lastMousePosition: Point = {
 	x: 0,
 	y: 0
 }
@@ -170,9 +169,9 @@ let lastMousePosition = {
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * 
- * @param delta 
- * @returns 
+ *
+ * @param delta
+ * @returns
  */
 function zoom(delta: number) {
 
@@ -188,7 +187,7 @@ function zoom(delta: number) {
 
 
 	const point = (ctx as any).transformPoint(lastMousePosition.x, lastMousePosition.y);
-	setCanvasZoom(point.x,point.y, factor);
+	setCanvasZoom(point.x, point.y, factor);
 	draw();
 }
 
@@ -244,7 +243,7 @@ function getMousePosition(evt: MouseEvent) {
  * @param evt The event.
  * @returns The mouse position.
  */
-function getMousePositionTransformed(evt: MouseEvent) {
+function getMousePositionTransformed(evt: MouseEvent): Point {
 
 	const mousePos = getMousePosition(evt)
 	const transPos = (ctx as any).transformPoint(mousePos.x, mousePos.y);
@@ -288,7 +287,7 @@ function draw() {
 		ctx.closePath();
 	}
 	ctx.restore();
-	
+
 	// Draw projects
 	ctx.save();
 	for (const project of projects)
@@ -332,8 +331,7 @@ function init() {
 		const name = element.name.toLowerCase();
 
 		// HACK: Since IntraAPI V2 does not specifiy this kind.
-		if (name.includes("module") && !name.includes("old-cpp"))
-		{
+		if (name.includes("module") && !name.includes("old-cpp")) {
 			// Nor any way of marking a final module ...
 			newProject = new Module(element);
 			if (name.endsWith("08"))
