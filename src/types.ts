@@ -59,7 +59,7 @@ const ProjectStatus = {
 	"not_recommended":	{foreground: Colors.Gray, background: Colors.Orange, textColor: Colors.Orange},
 }
 
-interface MousePos {
+interface Point {
 	x: number;
 	y: number;
 }

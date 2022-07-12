@@ -33,6 +33,7 @@ const config = {
 	startZoom: 1,						// Bigger value further, smaller closer.
 	minZoom: 0.45,						// Smallest possible zoom.
 	maxZoom: 10.0,						// Biggest possible zoom.
+	interactDistance: 500,				// Distance at which project is considered active, eg. when the curser hovers over a project
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,12 +70,12 @@ canvas.addEventListener('mousedown', function (evt) {
 	isDrag = false;
 });
 
-async function checkForCursor(pos: MousePos) {
+async function checkForCursor(pos: Point) {
 	for (const project of projects) {
 
 		const dist = (project.data.x - pos.x) ** 2 + (project.data.y - pos.y) ** 2;
 
-		if (dist > 500 ** 2) continue;
+		if (dist > config.interactDistance ** 2) continue;
 		if (project.intersects(pos.x, pos.y)) {
 			canvas.style.cursor = "pointer";
 			break;
@@ -103,7 +104,7 @@ canvas.addEventListener('mouseup', function (evt) {
 
 	projects.forEach(function (element: Project) {
 
-		const pos: MousePos = getMousePositionTransformed(evt);
+		const pos: Point = getMousePositionTransformed(evt);
 
 		if (element.selected = element.intersects(pos.x, pos.y))
 			element.onClick();
@@ -158,7 +159,7 @@ let dragStart: DOMPoint;
 let isDrag: boolean;
 let projects: Project[] = [];
 let factor = 0;
-let lastMousePosition = {
+let lastMousePosition: Point = {
 	x: 0,
 	y: 0
 }
@@ -242,7 +243,7 @@ function getMousePosition(evt: MouseEvent) {
  * @param evt The event.
  * @returns The mouse position.
  */
-function getMousePositionTransformed(evt: MouseEvent): MousePos {
+function getMousePositionTransformed(evt: MouseEvent): Point {
 
 	const mousePos = getMousePosition(evt)
 	const transPos = (ctx as any).transformPoint(mousePos.x, mousePos.y);
