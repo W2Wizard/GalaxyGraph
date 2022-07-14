@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 01:41:42 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/09 17:40:15 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/14 09:13:25 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ class Piscine extends Project {
 	constructor(rawProjectData: ProjectData) {
 		super(rawProjectData);
 		this.size = ProjectSizes.Piscine;
-		this.fontSizeOffset = 20;
 		this.x = this.data.x - this.width / 2;
 		this.y = this.data.y - this.height / 2;
+		this.fontOffset = 20;
 	}
 
 	override draw(): void {

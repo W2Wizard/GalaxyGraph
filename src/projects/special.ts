@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 01:41:24 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/09 17:36:20 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/14 09:10:35 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 
 	constructor(rawProjectData: ProjectData) {
 		super(rawProjectData);
-		this.fontSizeOffset = 75
 		this.x = this.data.x - this.width / 2;
 		this.y = this.data.y - this.height / 2;
+		this.fontOffset = 75;
 	}
 
 	override draw(): void {

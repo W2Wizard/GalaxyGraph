@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 01:31:17 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/11 15:32:21 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/07/14 09:15:10 by lde-la-h      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,16 @@ class Project {
 	lines: any[] = [];			// The project's lines
 	data: ProjectData;			// The API data of the project
 	state: any;					// The current project state.
-	fontSize: number;			// Default starting size of the font.
-	fontSizeOffset: number;		// Font size offset modifier to alter size of font.
 	selected: boolean;			// Is the project selected ?
 	firstDraw: boolean = true;	// Did we already draw the font.
+	fontOffset: number;			// Offset the size of the font, bigger value, bigger font.
+	fontSize: number;			// Default starting size of the font.
 
 	constructor(rawProjectData: ProjectData) {
 		this.data = rawProjectData;
 		this.size = ProjectSizes.Project;
 		this.fontSize = 20
-		this.fontSizeOffset = 0;
+		this.fontOffset = -10;
 		this.state = ProjectStatus[this.data.state];
 
 		for (let i = 0; i < this.data.by.length; i++) {
@@ -98,7 +98,7 @@ class Project {
 	///////////////////////////////////////////////////////////////////////////
 
 	setCurrentFont() {
-		ctx.font = `normal bold ${this.fontSize}px Segoe UI`;
+		ctx.font = `normal bold ${this.fontSize}px Roboto`;
 	}
 
 	setFontProperties(calculateFontSize: boolean) {
@@ -116,7 +116,7 @@ class Project {
 			this.setCurrentFont()
 			
 			const bounds = ctx.measureText(this.data.name);
-			if (width > bounds.width - this.fontSizeOffset)
+			if (width > bounds.width - this.fontOffset)
 				break;
 
 			this.fontSize--;
