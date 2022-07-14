@@ -8,8 +8,8 @@
 
 ---
 
-A recreation of the 'Holygraph' used on the intranet. The goal of this project is to
-introduce a new graph for the Improve Intra project and build a cursus editor for staff.
+A recreation of the 'Holy Graph' used on 42's Intranet. The goal of this project is to
+introduce a new graph for the [Improved Intra project](https://github.com/FreekBes/improved_intra/) and build a cursus editor for staff.
 
 ---
 
@@ -19,7 +19,7 @@ Though this project uses typescript, its intent is to be used with plain javascr
 
 ``` bash
 npm install
-npm run build
+npm run build   # use npm run build-windows on Windows
 ```
 
 or
@@ -28,6 +28,6 @@ or
 tsc tsconfig.json
 ```
 
-Then open the `html.index` in the www folder.
+Then open the `index.html` in the www folder.
 
 ![image](https://user-images.githubusercontent.com/63303990/178143182-09b83082-2d41-44fd-973d-c9545b49ff4f.png)
