@@ -6,7 +6,7 @@
 /*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 00:18:31 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/11 15:33:41 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/08/26 13:35:16 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,7 @@
 // Constants
 ////////////////////////////////////////////////////////////////////////////////
 
-const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height'));
-
 const canvas = document.getElementById('galaxy-graph') as HTMLCanvasElement;
-const search = document.getElementById('graph-search') as HTMLInputElement;
-const projectData = document.getElementById('project-datalist') as HTMLDataListElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
@@ -45,7 +41,7 @@ window.onload = function () {
 
 	// Set Canvas size
 	canvas.width = canvasScale * (window.innerWidth - 16);
-	canvas.height = canvasScale * (window.innerHeight - headerHeight - 16);
+	canvas.height = canvasScale * (window.innerHeight - 16);
 
 	init();
 	resetCanvas();
@@ -56,7 +52,7 @@ window.addEventListener("resize", function () {
 
 	// Recalculate the canvas size
 	canvas.width = canvasScale * (window.innerWidth - 16);
-	canvas.height = canvasScale * (window.innerHeight - headerHeight - 16);
+	canvas.height = canvasScale * (window.innerHeight - 16);
 
 	resetCanvas();
 	draw();
@@ -130,26 +126,6 @@ const handleScroll = function (evt: any) {
 
 canvas.addEventListener('wheel', handleScroll);
 canvas.addEventListener('mousewheel', handleScroll);
-
-////////////////////////////////////////////////////////////////////////////////
-// Editor
-////////////////////////////////////////////////////////////////////////////////
-
-search.onchange = (evt) => {
-	projects.forEach(function (element: Project) {
-
-		if (element.data.name == search.value) {
-			setCanvasPosition(element.data.x, element.data.y);
-			setCanvasZoom(element.data.x, element.data.y, 8);
-			element.onClick();
-			element.selected = true;
-			draw();
-
-			search.value = "";
-			return;
-		}
-	});
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Globals
@@ -337,10 +313,6 @@ function init() {
 			if (name.endsWith("08"))
 				newProject.size = ProjectSizes.Project;
 		}
-
-		let option = document.createElement('option');
-		option.value = element.name;
-		projectData.appendChild(option);
 
 		projects.push(newProject);
 	});

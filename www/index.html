@@ -14,37 +14,6 @@
 </head>
 
 <body>
-	<header>
-
-		<!-- Toolbar -->
-		<div class="stack left">
-			<!-- Project Search -->
-			<label class="stack-label" for="graph-search">Search:</label>
-			<input id="graph-search" class="stack-element" list="project-datalist" placeholder="Search" />
-			<datalist id="project-datalist">
-				<option value="">
-			</datalist>
-
-			<!-- Cursus selection -->
-			<label class="stack-label" for="graph-cursus-select">Cursus:</label>
-			<select id="graph-cursus-select" class="stack-element" name="cursus">
-				<option value="21">42cursus</option>
-				<option value="9">C Piscine</option>
-			</select>
-
-			<input class="button" type="button" value="Center View" onclick="resetCanvas(); draw();">
-			<input class="button" type="button" value="Edit Mode">
-
-			<div class="vertical"></div>
-
-			<!-- Actions -->
-			<input class="button" type="button" value="Reset">
-			<div class="vertical"></div>
-			<input class="button" type="button" value="Export">
-
-		</div>
-	</header>
-
 	<main>
 		<div style="position: relative;">
 			<canvas id="galaxy-graph"></canvas>
