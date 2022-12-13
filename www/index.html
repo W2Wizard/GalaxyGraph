@@ -14,6 +14,42 @@
 </head>
 
 <body>
+	<!-- Project description -->
+	<div id="graph_description">
+		<div class="header">
+			<a href="">Project Name</a>
+			<span>125</span>
+		</div>
+		<div class="time">
+			<span>About 200 years</span>
+		</div>
+		<div class="description">
+			<span>A project that is usually dissapointing.</span>
+		</div>
+		<div class="requirements">
+			<span>200 years of suffering.</span>
+		</div>
+	</div>
+
+	<!-- Options -->
+	<!-- TODO: Populate via TS -->
+	<div class="options">
+		<select id="cursus_selection">
+			<option selected>42 Cursus</option>
+			<option selected>C Piscine</option>
+		</select>
+
+		<input type="text" id="project_search" list="projects" placeholder="Search">
+		<datalist id="projects">
+			<option value="Libft">ID: 1314</option>
+			<option value="LibASM">ID: 2314</option>
+			<option value="KFS1">ID: 4200</option>
+			<option value="KFS2">ID: 6969</option>
+			<option value="KFS3">ID: 0001</option>
+		</datalist>
+	</div>
+
+	<!-- Graph rendering -->
 	<canvas id="galaxy-graph"></canvas>
 </body>
 
