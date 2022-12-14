@@ -6,13 +6,14 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/14 13:36:58 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/12/14 18:49:00 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 18:58:08 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 const projectSearch = document.getElementById("project_search") as HTMLInputElement;
 const projectDatalist = document.getElementById("projects") as HTMLDataListElement;
 const cursusSelection = document.getElementById("cursus_selection") as HTMLSelectElement;
+const projectLink = document.getElementById("project_link") as HTMLAnchorElement;
 
 /* ************************************************************************** */
 
@@ -23,6 +24,14 @@ cursusSelection.addEventListener("change", (ev: Event) => {
 		type: "graph_data",
 		id: parseInt(cursusSelection.getAttribute("value")),
 		msg: `Requesting graph for cursus: '${cursusSelection.value}'`
+	}, "*");
+});
+
+projectLink.addEventListener("click", (ev: Event) => {
+	ev.preventDefault();
+	window.top.postMessage({
+		type: "project_link_click",
+		href: projectLink.getAttribute("href")
 	}, "*");
 });
 

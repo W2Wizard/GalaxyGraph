@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:35:28 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/14 18:27:49 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 18:57:14 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,7 +336,8 @@ canvas2D.canvas.addEventListener("mouseup", (e) => {
 
 	// TODO: Cleaner ?
 	(header.children[0] as HTMLAnchorElement).innerText = selectedProject.data.name;
-	(header.children[1] as HTMLSpanElement).innerText = ProjectRenderStates[selectedProject.data.state].displayText;
+	(header.children[0] as HTMLAnchorElement).setAttribute("href", selectedProject.data.url);
+	(header.children[1] as HTMLSpanElement).innerText = selectedProject.renderState.displayText;
 	(header.children[1] as HTMLSpanElement).setAttribute("data-project-state", selectedProject.data.state);
 
 	time.innerText = selectedProject.data.duration;
