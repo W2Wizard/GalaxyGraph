@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:37:48 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/14 18:10:52 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 19:12:31 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,8 @@ class Canvas2D {
 			
 			// Either A or D component will work, since scaling is uniform.
 			this.zoomAmount = this.ctx.getTransform().a;
+			if (this.zoomAmount < 0.1 && zoom < 1) return;
+			if (this.zoomAmount > 10 && zoom > 1) return;
 
 			this.ctx.translate(this.transformedPos.x, this.transformedPos.y);
 			this.ctx.scale(zoom, zoom);
