@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:35:28 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/14 15:35:47 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 17:32:35 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,15 +286,33 @@ canvas2D.canvas.addEventListener("mousemove", (e) => {
 });
 
 canvas2D.canvas.addEventListener("mouseup", (e) => {
+	let selectedProject: IGraphRenderProject | null = null;
 	const mousePos = canvas2D.getTransformedPoint({ x: e.clientX, y: e.clientY });
+
 	for (const project of graph.projects) {
 		project.selected = false;
 		if (isPointIntersectingProject(mousePos.x, mousePos.y, project)) {
-			console.log(project.data.name)
+			selectedProject = project;
 			project.selected = true;
 		}
 	}
 
-	// TODO: Notify widget to display the other stuff.
-	// Needs its own function that updates it properly.
+	const widget = document.getElementById("graph_description") as HTMLDivElement;
+	if (selectedProject == null)
+		return widget.classList.remove("active");
+	widget.classList.add("active");
+
+	const header = document.getElementById("header") as HTMLDivElement;
+	const time = document.getElementById("time") as HTMLDivElement;
+	const description = document.getElementById("description") as HTMLDivElement;
+	const requirements = document.getElementById("requirements") as HTMLDivElement;
+
+	// TODO: Cleaner ?
+	(header.children[0] as HTMLAnchorElement).innerText = selectedProject.data.name;
+	(header.children[1] as HTMLSpanElement).innerText = ProjectRenderStates[selectedProject.data.state].displayText;
+	(header.children[1] as HTMLSpanElement).setAttribute("data-project-state", selectedProject.data.state);
+
+	time.innerText = selectedProject.data.duration;
+	description.innerText = selectedProject.data.description;
+	requirements.innerText = selectedProject.data.requirements;
 });

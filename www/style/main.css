@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/30 17:18:17 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/14 15:37:59 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 17:20:55 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,16 @@ input {
 	background-color: rgba(6,19,28,0.68);
 	border-radius: 5px;
 	padding: 20px;
+
+	opacity: 0;
+	pointer-events: none;
+	transition: all 0.4s;
+}
+
+#graph_description.active {
+	opacity: 1;
+	pointer-events: initial;
+	transition: all 0.1s;
 }
 
 @media (max-width: 992px) {
@@ -98,6 +108,7 @@ input {
 
 #graph_description #header a {
 	text-decoration: none;
+	font-weight: bold;
 	color: #00ecef;
 }
 

@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:31:56 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/14 14:44:11 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 17:29:27 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ interface IGraphProject {
 	x: number;
 	y: number;
 	duration: string;
-	requirements: string[];
+	requirements: string;
 	description: string;
 	url: string;
 	lines: {
@@ -81,12 +81,12 @@ const ProjectSizes: { [key: string] : number; } = {
 };
 
 const ProjectRenderStates = {
-	"done": 			{ foreground: Colors.Cyan, background: Colors.Cyan, textColor: Colors.White },
-	"fail": 			{ foreground: Colors.Red, background: Colors.Red, textColor: Colors.White },
-	"available": 		{ foreground: Colors.Gray, background: Colors.White, textColor: Colors.White },
-	"unavailable":		{ foreground: Colors.Gray, background: Colors.LightGray, textColor: Colors.LightGray },
-	"in_progress":		{ foreground: Colors.Gray, background: Colors.Cyan, textColor: Colors.Cyan },
-	"not_recommended":	{ foreground: Colors.Gray, background: Colors.Orange, textColor: Colors.Orange },
+	"done": 			{ displayText: "Done", foreground: Colors.Cyan, background: Colors.Cyan, textColor: Colors.White },
+	"fail": 			{ displayText: "Fail", foreground: Colors.Red, background: Colors.Red, textColor: Colors.White },
+	"available": 		{ displayText: "Available", foreground: Colors.Gray, background: Colors.White, textColor: Colors.White },
+	"unavailable":		{ displayText: "Unavailable", foreground: Colors.Gray, background: Colors.LightGray, textColor: Colors.LightGray },
+	"in_progress":		{ displayText: "In Progress", foreground: Colors.Gray, background: Colors.Cyan, textColor: Colors.Cyan },
+	"not_recommended":	{ displayText: "Not Recommended", foreground: Colors.Gray, background: Colors.Orange, textColor: Colors.Orange },
 }
 
 const RankRenderStates: { [key: string] : { color: string, width: number }; } = {
