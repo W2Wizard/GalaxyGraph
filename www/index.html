@@ -16,17 +16,19 @@
 <body>
 	<!-- Project description -->
 	<div id="graph_description">
-		<div class="header">
-			<a href="">Project Name</a>
-			<span>125</span>
+		<div id="header">
+			<a href="">
+				<b>Libft</b>
+			</a>
+			<span data-project-state="done">In Progress</span>
 		</div>
-		<div class="time">
+		<div id="time">
 			<span>About 200 years</span>
 		</div>
-		<div class="description">
+		<div id="description">
 			<span>A project that is usually dissapointing.</span>
 		</div>
-		<div class="requirements">
+		<div id="requirements">
 			<span>200 years of suffering.</span>
 		</div>
 	</div>
@@ -39,14 +41,8 @@
 			<option>C Piscine</option>
 		</select>
 
-		<input type="text" id="project_search" list="projects" placeholder="Search">
-		<datalist id="projects">
-			<option value="Libft">
-			<option value="LibASM">
-			<option value="KFS1">
-			<option value="KFS2">
-			<option value="KFS3">
-		</datalist>
+		<input type="text" id="project_search" list="projects" placeholder="Search" autocomplete="off">
+		<datalist id="projects"></datalist>
 	</div>
 
 	<!-- Graph rendering -->
@@ -54,6 +50,7 @@
 </body>
 
 <script src='../build/types.js'></script>
+<script src='../build/ui.js'></script>
 <script src='../build/canvas2D.js'></script>
 <script src='../build/temp_data.js'></script>
 <script src='../build/render.js'></script>

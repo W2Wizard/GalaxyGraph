@@ -3,32 +3,48 @@
 /*                                                        ::::::::            */
 /*   main.css                                           :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
+/*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/30 17:18:17 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/08/26 13:35:47 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 15:37:59 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
+:root {
+	--text-color: #f2f2ff
+}
 
 body {
 	margin: 0;
 	height: 100vh;
 	overflow: hidden;
+	font-family: sans-serif;
 }
 
 canvas {
 	width: 100%;
 	height: 100%;
 	background: radial-gradient(ellipse at bottom, #002534 25%, #090a0f 100%);
+	cursor: default;
+	user-select: none;
+}
+
+canvas#galaxy-graph.pointercursor {
+	cursor: pointer;
 }
 
 select, input {
-	padding: 4px;
+	padding: 8px;
+	font-size: 1.05em;
 	border-radius: 4px;
 	border: solid 1px #474b54;
-	color: #fff;
+	color: var(--text-color);
 	backdrop-filter: blur(5px);
 	background-color: rgba(30, 30, 30, 0.5);
+}
+
+input {
+	flex: 1;
 }
 
 /* ************************************************************************** */
@@ -37,7 +53,8 @@ select, input {
 	display: flex;
 	position: absolute;
 	gap: 10px;
-	margin: 10px;
+	padding: 10px;
+	width: 300px;
 }
 
 #graph_description {
@@ -57,7 +74,7 @@ select, input {
 	min-height: 100px;
 
 	border: solid 1px #474b54;
-	color: #fff;
+	color: var(--text-color);
 
 	background-color: rgba(6,19,28,0.68);
 	border-radius: 5px;
@@ -73,31 +90,58 @@ select, input {
 
 /* ************************************************************************** */
 
-#graph_description .header {
+#graph_description #header {
 	display: flex;
 	justify-content: space-between;
 }
 
-#graph_description .header span {
-	background-color: rgb(48, 190, 114);
-	color: #fff;
+
+#graph_description #header a {
+	text-decoration: none;
+	color: #00ecef;
+}
+
+#graph_description #header span {
+	color: var(--text-color);
 	font-size: 0.95em;
-	padding: 2px 4px;
 	border-radius: 4px;
+	padding: 5px;
 }
 
-#graph_description .header a {
+
+#graph_description #header span[data-project-state="done"] {
+	background-color: #5cb85c;
+}
+
+#graph_description #header span[data-project-state="in_progress"] {
+	background-color: #474b54;
+}
+
+#graph_description #header span[data-project-state="fail"] {
+	background-color: #d8636f;
+}
+
+#graph_description #header span[data-project-state="available"] {
+	color: #090a0f;
+	background-color: #fff;
+}
+
+#graph_description #header span[data-project-state="unavailable"] {
+	background-color: #373c48;
+}
+
+#graph_description #header span[data-project-state="not_recommended"] {
+	background-color: #df9539;
+}
+
+#graph_description #time {
 	
 }
 
-#tooltip .time {
-	
+#graph_description #description {
+	color: #909090;
 }
 
-#tooltip .description {
-	
-}
-
-#tooltip .requirements {
+#graph_description #requirements {
 	
 }

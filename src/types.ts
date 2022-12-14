@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   types.ts                                           :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: lde-la-h <main@w2wizard.dev>                 +#+                     */
+/*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:31:56 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/12 14:24:32 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/12/14 14:44:11 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,34 +26,33 @@ interface IGraphProject {
 	name: string;
 	x: number;
 	y: number;
-	lines: [
-		{
-			source: { 
-				x: number,
-				y: number
-			};
-			target: {
-				x: number,
-				y: number
-			};
-		}
-	];
 	duration: string;
 	requirements: string[];
 	description: string;
+	url: string;
+	lines: {
+		source: { 
+			x: number,
+			y: number
+		};
+		target: {
+			x: number,
+			y: number
+		};
+	}[];
 }
 
 // Interface for a graph project.
 interface IGraphRenderProject {
-	data: IGraphProject
+	data: IGraphProject;
 	selected: boolean;
-	renderState: { foreground: string, background: string, textColor: string }
+	renderState: { foreground: string, background: string, textColor: string };
 	render: (ctx: CanvasRenderingContext2D, project: IGraphRenderProject) => void;
+	// intersects: (x: number, y: number, project: IGraphRenderProject) => boolean;
 }
 
 // Interface for a graph.
 interface IGraph {
-	name: string;
 	ranks: TRankState[];
 	projects: IGraphRenderProject[];
 }
@@ -73,10 +72,10 @@ const ProjectSizes: { [key: string] : number; } = {
 	"big_project":			80,
 	"first_internship":		80,
 	"second_internship":	80,
-	"exam":					80,
-	"rush":					80,
+	"exam":					1,
+	"rush":					1,
 	"piscine":				80,
-	"project":				80,
+	"project":				20,
 	"module":				80,
 	"final_module":			80,
 };

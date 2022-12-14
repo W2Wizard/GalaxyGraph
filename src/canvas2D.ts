@@ -30,6 +30,7 @@ class Canvas2D {
 
 	private isDragging: boolean = false;
 	private dragPosition = { x: 0, y: 0 };
+	private frameID: number | null = null;
 	
 	//= Constructor =//
 
@@ -99,10 +100,8 @@ class Canvas2D {
 	 * @param renderFunc The function callback to render your content with.
 	 */
 	public render(renderFunc: (ctx: CanvasRenderingContext2D) => void): void {
-
-		let frameID: number | null = null;
 		const animate = () => {
-			if (!this.canvas && frameID != null) return cancelAnimationFrame(frameID);
+			if (!this.canvas && this.frameID != null) return cancelAnimationFrame(this.frameID);
 
 			this.ctx.save();
 			this.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -110,9 +109,19 @@ class Canvas2D {
 			this.ctx.restore();
 
 			renderFunc.call(this, this.ctx);
-			frameID = requestAnimationFrame(animate);
+			this.frameID = requestAnimationFrame(animate);
 		}
 		animate();
+	}
+
+	/** Stops the rendering, clears the canvas as well. */
+	public stopRender(): void {
+		this.ctx.save();
+		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		this.ctx.restore();
+		if (this.frameID != null)
+			cancelAnimationFrame(this.frameID);
 	}
 
 	/**

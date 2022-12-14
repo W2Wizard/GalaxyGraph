@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   temp_data.ts                                       :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: lde-la-h <main@w2wizard.dev>                 +#+                     */
+/*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/07/06 10:44:04 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/12 14:04:35 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/12/14 15:23:46 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,59 +20,64 @@ const APIData: IGraphProject[] = [
 		lines: [
 			{
 				source: { x: 0, y: 0 },
-				target: { x: 0, y: 0 },
+				target: { x: 200, y: 200 },
+			},
+			{
+				source: { x: 0, y: 0 },
+				target: { x: 800, y: 800 },
 			}
 		],
-		name: "libft",
+		name: "KFS1",
 		requirements: ["123"],
 		state: "available",
+		url: ""
 	},
 	{
 		x: 0,
-		y: 0,
+		y: 400,
 		description: "123",
 		duration: "123",
 		kind: "project",
-		lines: [
-			{
-				source: { x: 0, y: 0 },
-				target: { x: 0, y: 0 },
-			}
-		],
-		name: "libft",
+		lines: [],
+		name: "KFS2",
 		requirements: ["123"],
-		state: "available",
+		state: "fail",
+		url: ""
 	},
 	{
 		x: 0,
-		y: 0,
+		y: 600,
 		description: "123",
 		duration: "123",
 		kind: "project",
-		lines: [
-			{
-				source: { x: 0, y: 0 },
-				target: { x: 0, y: 0 },
-			}
-		],
-		name: "libft",
+		lines: [],
+		name: "KFS3",
 		requirements: ["123"],
-		state: "available",
+		state: "in_progress",
+		url: ""
 	},
 	{
 		x: 0,
-		y: 0,
+		y: 800,
 		description: "123",
 		duration: "123",
 		kind: "project",
-		lines: [
-			{
-				source: { x: 0, y: 0 },
-				target: { x: 0, y: 0 },
-			}
-		],
+		lines: [],
 		name: "libft",
 		requirements: ["123"],
-		state: "available",
+		state: "not_recommended",
+		url: ""
+	},
+	{
+		x: 400,
+		y: 800,
+		description: "123",
+		duration: "123",
+		kind: "project",
+		lines: [],
+		name: "LibASM",
+		requirements: ["123"],
+		state: "done",
+		url: ""
 	}
 ];

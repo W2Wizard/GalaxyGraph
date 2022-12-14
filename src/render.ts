@@ -3,22 +3,62 @@
 /*                                                        ::::::::            */
 /*   render.ts                                          :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: lde-la-h <main@w2wizard.dev>                 +#+                     */
+/*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:35:28 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/12 13:35:45 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/12/14 15:35:47 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
+/* ************************************************************************** */
+
+/**
+ * This file is responsible for all the rendering and initial page management
+ * for the galaxy graph.
+ */
+
+// Globals
 /* ************************************************************************** */
 
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 /* Graph config */
+let graph: IGraph;
 const canvasScale = isFirefox ? 1 : 2; // The upscaling of the canvas, higher is more resolution.
 const canvas = document.getElementById('galaxy-graph') as HTMLCanvasElement;
 const canvasParent = canvas.parentElement as HTMLElement;
-console.log(canvasParent.clientWidth, canvasParent.clientHeight)
 const canvas2D = new Canvas2D(canvas, canvasParent.clientWidth, canvasParent.clientHeight);
 
+const boxDimensions = { width: 160, height: 50 };
+const specialDimensions = { width: 160, height: 50 };
+
+// Intersections
+/* ************************************************************************** */
+
+function isInsideCircle(x: number, y: number, cx: number, cy: number, rad: number) {
+	return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= rad * rad;
+}
+
+function isInsideRectangle(x: number, y: number, rx: number, ry: number, width: number, height: number,) {
+	const x1 = rx - width / 2;
+	const y1 = ry - height / 2;
+
+	if (x < x1 || y < y1 || x > x1 + width || y > y1 + height)
+		return false;
+	return true;
+}
+
+function isPointIntersectingProject(x: number, y: number, project: IGraphRenderProject): boolean {
+	switch (project.data.kind) {
+		case "rush":
+		case "exam":
+			return isInsideRectangle(x, y, project.data.x, project.data.y, specialDimensions.width, specialDimensions.height);
+		case "piscine":
+			return isInsideRectangle(x, y, project.data.x, project.data.y, boxDimensions.width, boxDimensions.height);
+		default:
+			return isInsideCircle(x, y, project.data.x, project.data.y, ProjectSizes[project.data.kind]);
+	}
+}
+
+// Render functions
 /* ************************************************************************** */
 
 /**
@@ -31,7 +71,9 @@ function drawCircleProject(ctx: CanvasRenderingContext2D, project: IGraphRenderP
 	const size: number = ProjectSizes[project.data.kind];
 	ctx.beginPath();
 	{
-		ctx.shadowBlur = project.selected ? 180 : 0;
+		ctx.lineWidth = 10;
+		// TODO: Clamp The blur amount, Zoom is inverted < 0 is further out > 0 is further in
+		ctx.shadowBlur = project.selected ? 1 / canvas2D.zoomAmount : 0;
 		ctx.shadowColor = ctx.strokeStyle = project.renderState.background;
 		ctx.fillStyle = project.renderState.foreground;
 		ctx.arc(project.data.x, project.data.y, size, Math.PI * 2, 0);
@@ -48,17 +90,16 @@ function drawCircleProject(ctx: CanvasRenderingContext2D, project: IGraphRenderP
  * @param project The project to draw.
  */
 function drawBoxProject(ctx: CanvasRenderingContext2D, project: IGraphRenderProject) {
-	const width: number = 160;
-	const height: number = 52;
-
 	ctx.save();
-	ctx.lineWidth = 5;
+	ctx.lineWidth = 4;
 	ctx.beginPath();
 	{
-		ctx.shadowBlur = project.selected ? 180 : 0;
+		ctx.shadowBlur = project.selected ? canvas2D.zoomAmount * 200 : 0;
 		ctx.shadowColor = ctx.strokeStyle = project.renderState.background;
 		ctx.fillStyle = project.renderState.foreground;
-		ctx.rect(project.data.x, project.data.y, width, height);
+		ctx.rect(project.data.x - boxDimensions.width / 2, 
+				project.data.y - boxDimensions.height / 2, 
+				boxDimensions.width, boxDimensions.height);
 		ctx.fill();
 		ctx.stroke();
 	}
@@ -72,19 +113,23 @@ function drawBoxProject(ctx: CanvasRenderingContext2D, project: IGraphRenderProj
  * @param project The project to draw.
  */
 function drawSpecialProject(ctx: CanvasRenderingContext2D, project: IGraphRenderProject) {
-	const width: number = 128;
-	const height: number = 48;
 	const x: number = project.data.x;
 	const y: number = project.data.y;
+	const width: number = specialDimensions.width;
+	const height: number = specialDimensions.height;
 	let radius: number = ProjectSizes[project.data.kind];
 
 	if (width < 2 * radius) radius = width / 2;
 	if (height < 2 * radius) radius = height / 2;
 
 	ctx.save()
+	ctx.lineWidth = 5;
 	ctx.beginPath();
 	{
-		ctx.shadowBlur = project.selected ? 180 : 0;
+		// TODO: Because Idk if intra has its origin in the middle or the top left corner
+		// We need to either offset this witht he box width / 2 and height / 2.
+		// If intra does not center its origin we need to just alter the intersection.
+		ctx.shadowBlur = project.selected ? canvas2D.zoomAmount * 200 : 0;
 		ctx.shadowColor = ctx.strokeStyle = project.renderState.background;
 		ctx.moveTo(x + radius, y);
 		ctx.arcTo(x + width, y, x + width, y + height, radius);
@@ -96,13 +141,6 @@ function drawSpecialProject(ctx: CanvasRenderingContext2D, project: IGraphRender
 	}
 	ctx.closePath();
 	ctx.restore();
-}
-
-/* ************************************************************************** */
-
-/** Fetches the graph data that is supposed to be rendered */
-function fetchGraph(): IGraph {
-	return { name: "42", projects: [], ranks: ["done", "done", "in_progress", "unavailable"] }
 }
 
 /**
@@ -122,17 +160,16 @@ function drawProjects(ctx: CanvasRenderingContext2D, graph: IGraph) {
  */
 function drawProjectLines(ctx: CanvasRenderingContext2D, graph: IGraph) {
 	ctx.save();
-	ctx.lineWidth = 11;
-	ctx.lineCap = 'round';
-
-	// NOTE: For any 42 Intra staff, please do not store lines like this in the future.
+	// NOTE: For any 42 Intra staff, please do not store lines like this in the future. Its awful.
 	for (const project of graph.projects) {
 		for (const line of project.data.lines) {
 			ctx.beginPath();
-			ctx.strokeStyle = project.renderState.foreground;
-			ctx.moveTo(line.source.x, line.source.y);
-			ctx.lineTo(line.target.x, line.target.y);
-			ctx.stroke();
+				ctx.lineWidth = 10;
+				ctx.lineCap = 'round';
+				ctx.strokeStyle = project.renderState.background;
+				ctx.moveTo(line.source.x, line.source.y);
+				ctx.lineTo(line.target.x, line.target.y);
+				ctx.stroke();
 			ctx.closePath();
 		}
 	}
@@ -158,56 +195,58 @@ function drawCoreRanks(ctx: CanvasRenderingContext2D, graph: IGraph) {
 	ctx.restore();
 }
 
+// Graph initilization
 /* ************************************************************************** */
 
+function getRenderFunction(project: IGraphProject): (ctx: CanvasRenderingContext2D, project: IGraphRenderProject) => void {
+	switch (project.kind) {
+		case "rush":
+		case "exam":
+			return drawSpecialProject;
+		case "piscine":
+			return drawBoxProject;
+		default:
+			return drawCircleProject;
+	}
+}
+
 /** Initializes the graph, fetches content and then starts rendering the data */
-function initGraph() {
-	const graph: IGraph = fetchGraph();
+function initGraph(graphData: any) {
+	graph = { ranks: graphData.ranks, projects: [] };
 
-	// Assign correct render function to projects.
-	for (const project of graph.projects) {
-		project.selected = false;
-		project.renderState = ProjectRenderStates[project.data.state];
+	console.log("Start Galaxygraph");
+	for (const child of projectDatalist.children)
+		child.remove()
+	
+	// TODO: Clear datalist.
 
+	for (const project of graphData.projects as IGraphProject[]) {
 		// HACK: Since IntraAPI V2 does not specifiy this kind ...
-		const name = project.data.name.toLowerCase();
-		if (name.includes("module") && !name.includes("old-cpp")) {
-			project.data.kind = "module";
+		const name = project.name.toLowerCase();
+		if (name.includes("module")) { // TODO: Check for more somehow ?
+			project.kind = "module";
 			
-			// Nor does it have a kind for a final module ...
+			// Nor does it have a kind for a final module ... bravo!
 			if (name.endsWith("08"))
-				project.data.kind = "final_module";
+				project.kind = "final_module";
 			continue;
 		}
 
-		switch (project.data.kind) {
-			// Big projects
-			case "part_time":
-			case "big_project":
-			case "first_internship":
-			case "second_internship":
-			case "project": {
-				project.render = drawCircleProject;
-				break;
-			}
+		// Add to renderque
+		graph.projects.push({
+			data: project,
+			selected: false,
+			renderState: ProjectRenderStates[project.state],
+			render: getRenderFunction(project),
+		});
 
-			// Special projects
-			case "rush":
-			case "exam": {
-				project.render = drawSpecialProject;
-				break;
-			}
-			
-			// Piscines
-			case "piscine": {
-				project.render = drawBoxProject;
-				break;
-			}
-		}
+		// Add to datalist.
+		let option = document.createElement('option');
+		option.value = project.name;
+		projectDatalist.appendChild(option);
 	}
 
 	canvas2D.render((ctx) => {
-		// NOTE: Because 42 loves hardcoding ...
 		if (graph.ranks.length > 0)
 			drawCoreRanks(ctx, graph);
 		drawProjectLines(ctx, graph);
@@ -215,10 +254,47 @@ function initGraph() {
 	});
 }
 
+// Window listeners.
+/* ************************************************************************** */
+
+window.addEventListener("load", () => {
+	// TODO: Fetch from IIntra.
+	initGraph({
+		ranks: ["done", "done", "in_progress", "unavailable"],
+		projects: APIData
+	});
+});
+
 window.addEventListener("resize", () => {
-	console.log("Resize!");
 	canvas2D.setViewPosition({x: 0, y: 0});
 	canvas2D.setDimensions(canvasParent.clientWidth, canvasParent.clientHeight);
 });
 
-window.addEventListener("load", initGraph);
+canvas2D.canvas.addEventListener("mousedown", (e) => {
+	//
+});
+
+canvas2D.canvas.addEventListener("mousemove", (e) => {
+	const mousePos = canvas2D.getTransformedPoint({ x: e.clientX, y: e.clientY });
+	for (const project of graph.projects) {
+		if (isPointIntersectingProject(mousePos.x, mousePos.y, project)) {
+			canvas2D.canvas.classList.add("pointercursor");
+			return;
+		}
+	}
+	canvas2D.canvas.classList.remove("pointercursor");
+});
+
+canvas2D.canvas.addEventListener("mouseup", (e) => {
+	const mousePos = canvas2D.getTransformedPoint({ x: e.clientX, y: e.clientY });
+	for (const project of graph.projects) {
+		project.selected = false;
+		if (isPointIntersectingProject(mousePos.x, mousePos.y, project)) {
+			console.log(project.data.name)
+			project.selected = true;
+		}
+	}
+
+	// TODO: Notify widget to display the other stuff.
+	// Needs its own function that updates it properly.
+});
