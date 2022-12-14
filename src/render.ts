@@ -162,9 +162,7 @@ function drawCoreRanks(ctx: CanvasRenderingContext2D, graph: IGraph) {
 
 /** Initializes the graph, fetches content and then starts rendering the data */
 function initGraph() {
-	console.log("Starting ...")
 	const graph: IGraph = fetchGraph();
-	console.log("Starting ...")
 
 	// Assign correct render function to projects.
 	for (const project of graph.projects) {
