@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/14 13:36:58 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/12/14 16:59:50 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 18:27:17 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,12 @@ const cursusSelection = document.getElementById("cursus_selection") as HTMLSelec
 
 cursusSelection.addEventListener("change", (ev: Event) => {
 	console.log("Selecting:", cursusSelection.value);
-	window.top.postMessage({ type: "graph_data", msg: `Requesting cursus: '${cursusSelection.value}'` }, "*");
+	canvas2D.stopRender();
+	window.top.postMessage({
+		type: "graph_data",
+		id: parseInt(cursusSelection.getAttribute("value")),
+		msg: `Requesting graph for cursus: '${cursusSelection.value}'`
+	}, "*");
 });
 
 projectSearch.addEventListener("change", (ev: Event) => {
@@ -45,6 +50,20 @@ window.addEventListener("message", (e) => {
 		case "graph_data":
 			initGraph(e.data.graph);
 			break;
+		case "cursus_data": {
+			for (const child of cursusSelection)
+				child.remove()
+			for (const cursus of e.data.cursi) {
+				let option = document.createElement('option');
+				option.setAttribute("value", cursus.id);
+				option.setAttribute("text", cursus.name);
+				if (cursus.selected)
+					option.setAttribute("selected", "selected");
+				cursusSelection.appendChild(option);
+			}
+			window.top.postMessage({ type: "graph_data", id: parseInt(cursusSelection.getAttribute("value")) });
+			break;
+		}
 		default:
 			window.top.postMessage({type: "error", msg: `Unknown message type: '${e.data.type}'` });
 			break;

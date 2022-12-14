@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:31:56 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/14 17:29:27 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 17:51:00 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ interface IGraphProject {
 interface IGraphRenderProject {
 	data: IGraphProject;
 	selected: boolean;
-	renderState: { foreground: string, background: string, textColor: string };
+	renderState: { displayText: string, foreground: string, background: string, textColor: string };
 	render: (ctx: CanvasRenderingContext2D, project: IGraphRenderProject) => void;
 	// intersects: (x: number, y: number, project: IGraphRenderProject) => boolean;
 }
@@ -75,7 +75,7 @@ const ProjectSizes: { [key: string] : number; } = {
 	"exam":					1,
 	"rush":					1,
 	"piscine":				80,
-	"project":				20,
+	"project":				35,
 	"module":				80,
 	"final_module":			80,
 };

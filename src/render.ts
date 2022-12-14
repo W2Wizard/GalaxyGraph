@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:35:28 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/14 17:32:35 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 18:27:49 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,14 +143,44 @@ function drawSpecialProject(ctx: CanvasRenderingContext2D, project: IGraphRender
 	ctx.restore();
 }
 
+function calculateText(ctx: CanvasRenderingContext2D, project: IGraphRenderProject) {
+	let fontSize: number = 20;
+	const width = ProjectSizes[project.data.kind] * 2;
+
+	for (;;) {
+		ctx.font = `normal ${fontSize}px Roboto`;
+		const bounds = ctx.measureText(project.data.name);
+
+		if (width > bounds.width + 10) // TODO: Create Padding var
+			break;
+		fontSize--;
+	}
+}
+
+function drawProjectName(ctx: CanvasRenderingContext2D, project: IGraphRenderProject) {
+	ctx.save();
+	ctx.beginPath();
+	{
+		calculateText(ctx, project);
+		ctx.textAlign = 'center';
+		ctx.fillStyle = project.renderState.textColor;
+		ctx.fillText(project.data.name, project.data.x, project.data.y + 5);
+		ctx.fill();
+	}
+	ctx.closePath();
+	ctx.restore();
+}
+
 /**
  * Draws the projects on the graph.
  * @param ctx The canvas context to draw on.
  */
 function drawProjects(ctx: CanvasRenderingContext2D, graph: IGraph) {
 	ctx.save();
-	for (const project of graph.projects)
+	for (const project of graph.projects) {
 		project.render(ctx, project);
+		drawProjectName(ctx, project);
+	}
 	ctx.restore();
 }
 
@@ -214,9 +244,8 @@ function getRenderFunction(project: IGraphProject): (ctx: CanvasRenderingContext
 function initGraph(graphData: any) {
 	graph = { ranks: graphData.ranks, projects: [] };
 
-	console.log("Start Galaxygraph");
 	for (const child of projectDatalist.children)
-		child.remove()
+		child.remove();
 	
 	// TODO: Clear datalist.
 
@@ -257,21 +286,19 @@ function initGraph(graphData: any) {
 // Window listeners.
 /* ************************************************************************** */
 
-window.addEventListener("load", () => {
-	// TODO: Fetch from IIntra.
-	initGraph({
-		ranks: ["done", "done", "in_progress", "unavailable"],
-		projects: APIData
-	});
-});
+// window.addEventListener("load", () => {
+// 	window.top.postMessage()
+
+// 	// TODO: Fetch from IIntra.
+// 	initGraph({
+// 		ranks: ["done", "done", "in_progress", "unavailable"],
+// 		projects: APIData
+// 	});
+// });
 
 window.addEventListener("resize", () => {
 	canvas2D.setViewPosition({x: 0, y: 0});
 	canvas2D.setDimensions(canvasParent.clientWidth, canvasParent.clientHeight);
-});
-
-canvas2D.canvas.addEventListener("mousedown", (e) => {
-	//
 });
 
 canvas2D.canvas.addEventListener("mousemove", (e) => {
