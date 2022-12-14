@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/14 13:36:58 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/12/14 18:27:17 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 18:49:00 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,16 +56,16 @@ window.addEventListener("message", (e) => {
 			for (const cursus of e.data.cursi) {
 				let option = document.createElement('option');
 				option.setAttribute("value", cursus.id);
-				option.setAttribute("text", cursus.name);
+				option.innerText = cursus.name;
 				if (cursus.selected)
 					option.setAttribute("selected", "selected");
 				cursusSelection.appendChild(option);
 			}
-			window.top.postMessage({ type: "graph_data", id: parseInt(cursusSelection.getAttribute("value")) });
+			window.top.postMessage({ type: "graph_data", id: parseInt(cursusSelection.getAttribute("value")) }, "*");
 			break;
 		}
 		default:
-			window.top.postMessage({type: "error", msg: `Unknown message type: '${e.data.type}'` });
+			window.top.postMessage({type: "error", msg: `Unknown message type: '${e.data.type}'` }, "*");
 			break;
 	}
 });
