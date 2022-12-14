@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   canvas2D.ts                                        :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: lde-la-h <main@w2wizard.dev>                 +#+                     */
+/*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:37:48 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/12 13:39:02 by lde-la-h      ########   odam.nl         */
+/*   Updated: 2022/12/14 18:10:52 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,10 @@ class Canvas2D {
 		this.ctx.translate(this.transformedPos.x, this.transformedPos.y);
 	
 		//= Mouse events =//
+
+		this.canvas.addEventListener("mouseleave", (e: MouseEvent) => {
+			this.isDragging = false;
+		});
 
 		this.canvas.addEventListener("mousedown", (e: MouseEvent) => {
 			this.isDragging = true;
