@@ -40,7 +40,7 @@ projectSearch.addEventListener("change", (ev: Event) => {
 		return;
 
 	console.log("Searching:", projectSearch.value);
-	
+
 	let targetProject: IGraphProject | null = null;
 	for (const project of graph.projects) {
 		if (project.data.name.toLowerCase() === projectSearch.value.toLowerCase()) {
@@ -70,7 +70,7 @@ window.addEventListener("message", (e) => {
 					option.setAttribute("selected", "selected");
 				cursusSelection.appendChild(option);
 			}
-			window.top.postMessage({ type: "graph_data", id: parseInt(cursusSelection.getAttribute("value")) }, "*");
+			window.top.postMessage({ type: "graph_data", id: parseInt(cursusSelection.value) }, "*");
 			break;
 		}
 		default:
