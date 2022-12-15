@@ -113,8 +113,8 @@ function drawBoxProject(ctx: CanvasRenderingContext2D, project: IGraphRenderProj
  * @param project The project to draw.
  */
 function drawSpecialProject(ctx: CanvasRenderingContext2D, project: IGraphRenderProject) {
-	const x: number = project.data.x;
-	const y: number = project.data.y;
+	const x: number = project.data.x - specialDimensions.width / 2;
+	const y: number = project.data.y - specialDimensions.height / 2;
 	const width: number = specialDimensions.width;
 	const height: number = specialDimensions.height;
 	let radius: number = ProjectSizes[project.data.kind];
