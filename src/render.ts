@@ -21,7 +21,7 @@
 const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 /* Graph config */
-let graph: IGraph;
+let graph: IGraph = { ranks: [], projects: [] };
 const canvasScale = isFirefox ? 1 : 2; // The upscaling of the canvas, higher is more resolution.
 const canvas = document.getElementById('galaxy-graph') as HTMLCanvasElement;
 const canvasParent = canvas.parentElement as HTMLElement;
