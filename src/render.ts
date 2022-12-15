@@ -97,8 +97,8 @@ function drawBoxProject(ctx: CanvasRenderingContext2D, project: IGraphRenderProj
 		ctx.shadowBlur = project.selected ? canvas2D.zoomAmount * 200 : 0;
 		ctx.shadowColor = ctx.strokeStyle = project.renderState.background;
 		ctx.fillStyle = project.renderState.foreground;
-		ctx.rect(project.data.x - boxDimensions.width / 2, 
-				project.data.y - boxDimensions.height / 2, 
+		ctx.rect(project.data.x - boxDimensions.width / 2,
+				project.data.y - boxDimensions.height / 2,
 				boxDimensions.width, boxDimensions.height);
 		ctx.fill();
 		ctx.stroke();
@@ -145,9 +145,20 @@ function drawSpecialProject(ctx: CanvasRenderingContext2D, project: IGraphRender
 
 function calculateText(ctx: CanvasRenderingContext2D, project: IGraphRenderProject) {
 	let fontSize: number = 20;
-	const width = ProjectSizes[project.data.kind] * 2;
+	let width = ProjectSizes[project.data.kind] * 2;
 
-	for (;;) {
+	// Overwrite width for special cases
+	switch (project.data.kind) {
+		case "rush":
+		case "exam":
+			width = specialDimensions.width;
+			break;
+		case "piscine":
+			width = boxDimensions.width;
+			break;
+	}
+
+	while (fontSize > 0) { // Make sure font size cannot be 0 or negative
 		ctx.font = `normal ${fontSize}px Roboto`;
 		const bounds = ctx.measureText(project.data.name);
 
@@ -246,7 +257,7 @@ function initGraph(graphData: any) {
 
 	for (const child of projectDatalist.children)
 		child.remove();
-	
+
 	// TODO: Clear datalist.
 
 	for (const project of graphData.projects as IGraphProject[]) {
@@ -254,7 +265,7 @@ function initGraph(graphData: any) {
 		const name = project.name.toLowerCase();
 		if (name.includes("module")) { // TODO: Check for more somehow ?
 			project.kind = "module";
-			
+
 			// Nor does it have a kind for a final module ... bravo!
 			if (name.endsWith("08"))
 				project.kind = "final_module";
