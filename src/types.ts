@@ -31,7 +31,7 @@ interface IGraphProject {
 	description: string;
 	url: string;
 	lines: {
-		source: { 
+		source: {
 			x: number,
 			y: number
 		};
@@ -68,16 +68,16 @@ const Colors = {
 };
 
 const ProjectSizes: { [key: string] : number; } = {
-	"part_time":			80,
-	"big_project":			80,
-	"first_internship":		80,
-	"second_internship":	80,
-	"exam":					1,
-	"rush":					1,
+	"part_time":			65,
+	"big_project":			65,
+	"first_internship":		65,
+	"second_internship":	65,
+	"exam":					8,
+	"rush":					8,
 	"piscine":				80,
 	"project":				35,
-	"module":				80,
-	"final_module":			80,
+	"module":				25,
+	"final_module":			30,
 };
 
 const ProjectRenderStates = {
