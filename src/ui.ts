@@ -13,18 +13,29 @@
 const projectSearch = document.getElementById("project_search") as HTMLInputElement;
 const projectDatalist = document.getElementById("projects") as HTMLDataListElement;
 const cursusSelection = document.getElementById("cursus_selection") as HTMLSelectElement;
+const campusSelection = document.getElementById("campus_selection") as HTMLSelectElement;
 const projectLink = document.getElementById("project_link") as HTMLAnchorElement;
 
 /* ************************************************************************** */
 
-cursusSelection.addEventListener("change", (ev: Event) => {
-	console.log("Selecting:", cursusSelection.value);
+const requestGraphData = () => {
 	canvas2D.stopRender();
 	window.top.postMessage({
 		type: "graph_data",
-		id: parseInt(cursusSelection.getAttribute("value")),
-		msg: `Requesting graph for cursus: '${cursusSelection.value}'`
+		cursus_id: parseInt(cursusSelection.value),
+		campus_id: parseInt(campusSelection.value),
+		msg: `Requesting graph for cursus: '${cursusSelection.value} and campus ${campusSelection.value}'`
 	}, "*");
+}
+
+cursusSelection.addEventListener("change", (ev: Event) => {
+	console.log("Selecting cursus:", cursusSelection.value);
+	requestGraphData();
+});
+
+campusSelection.addEventListener("change", (ev: Event) => {
+	console.log("Selecting campus:", campusSelection.value);
+	requestGraphData();
 });
 
 projectLink.addEventListener("click", (ev: Event) => {
@@ -59,7 +70,8 @@ window.addEventListener("message", (e) => {
 		case "graph_data":
 			initGraph(e.data.graph);
 			break;
-		case "cursus_data": {
+		case "init_data": {
+			// Populate cursus selection
 			for (const child of cursusSelection)
 				child.remove()
 			for (const cursus of e.data.cursi) {
@@ -70,7 +82,29 @@ window.addEventListener("message", (e) => {
 					option.setAttribute("selected", "selected");
 				cursusSelection.appendChild(option);
 			}
-			window.top.postMessage({ type: "graph_data", id: parseInt(cursusSelection.value) }, "*");
+			if (cursusSelection.children.length > 1)
+				cursusSelection.removeAttribute("disabled");
+			else
+				cursusSelection.setAttribute("disabled", "disabled");
+
+			// Populate campus selection
+			for (const child of campusSelection)
+				child.remove()
+			for (const campus of e.data.campi) {
+				let option = document.createElement('option');
+				option.setAttribute("value", campus.id);
+				option.innerText = campus.name;
+				if (campus.selected)
+					option.setAttribute("selected", "selected");
+				campusSelection.appendChild(option);
+			}
+			if (campusSelection.children.length > 1)
+				campusSelection.removeAttribute("disabled");
+			else
+				campusSelection.setAttribute("disabled", "disabled");
+
+			// Request graph data for the selected cursus and campus
+			requestGraphData();
 			break;
 		}
 		default:

@@ -47,6 +47,10 @@ input {
 	flex: 1;
 }
 
+select:disabled, input:disabled {
+	display: none;
+}
+
 /* ************************************************************************** */
 
 .options {
