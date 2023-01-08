@@ -72,10 +72,10 @@ const ProjectSizes: { [key: string] : number; } = {
 	"big_project":			65,
 	"first_internship":		65,
 	"second_internship":	65,
-	"exam":					8,
+	"exam":					15,
 	"rush":					8,
 	"piscine":				80,
-	"project":				35,
+	"project":				50,
 	"module":				25,
 	"final_module":			30,
 };
@@ -91,6 +91,6 @@ const ProjectRenderStates = {
 
 const RankRenderStates: { [key: string] : { color: string, width: number }; } = {
 	"done":			{ color: Colors.Cyan, width: 10 },
-	"in_progress":	{ color: Colors.Cyan, width: 4 },
-	"unavailable":	{ color: Colors.Gray, width: 4 },
+	"in_progress":	{ color: Colors.Cyan, width: 5 },
+	"unavailable":	{ color: Colors.Gray, width: 5 },
 };

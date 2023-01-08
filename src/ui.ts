@@ -54,15 +54,16 @@ projectSearch.addEventListener("change", (ev: Event) => {
 
 	let targetProject: IGraphProject | null = null;
 	for (const project of graph.projects) {
+		project.selected = false;
 		if (project.data.name.toLowerCase() === projectSearch.value.toLowerCase()) {
 			targetProject = project.data;
+			project.selected = true;
 			break;
 		}
 	}
-	if (targetProject == null)
-		return;
 
-	canvas2D.setViewPosition({x: targetProject.x, y: targetProject.y });
+	if (targetProject != null)
+		canvas2D.setViewPosition({x: targetProject.x, y: targetProject.y });
 });
 
 window.addEventListener("message", (e) => {

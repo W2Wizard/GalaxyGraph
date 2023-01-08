@@ -28,7 +28,7 @@ const canvasParent = canvas.parentElement as HTMLElement;
 const canvas2D = new Canvas2D(canvas, canvasParent.clientWidth, canvasParent.clientHeight);
 
 const boxDimensions = { width: 160, height: 50 };
-const specialDimensions = { width: 160, height: 50 };
+const specialDimensions = { width: 120, height: 42 };
 
 // Intersections
 /* ************************************************************************** */
@@ -61,6 +61,12 @@ function isPointIntersectingProject(x: number, y: number, project: IGraphRenderP
 // Render functions
 /* ************************************************************************** */
 
+// Write a function that returns the appropriate blur amount based on the zoom level from the canvas.
+
+
+function getAppropriateBlur(canvas: Canvas2D) {
+}
+
 /**
  * Draws a circle project on the graph.
  * @param ctx The canvas context to draw on.
@@ -72,8 +78,7 @@ function drawCircleProject(ctx: CanvasRenderingContext2D, project: IGraphRenderP
 	ctx.beginPath();
 	{
 		ctx.lineWidth = 10;
-		// TODO: Clamp The blur amount, Zoom is inverted < 0 is further out > 0 is further in
-		ctx.shadowBlur = project.selected ? 1 / canvas2D.zoomAmount : 0;
+		ctx.shadowBlur = project.selected ? 200 * Math.max(...[canvas2D.zoomAmount, 1]) : 0;
 		ctx.shadowColor = ctx.strokeStyle = project.renderState.background;
 		ctx.fillStyle = project.renderState.foreground;
 		ctx.arc(project.data.x, project.data.y, size, Math.PI * 2, 0);
@@ -94,7 +99,7 @@ function drawBoxProject(ctx: CanvasRenderingContext2D, project: IGraphRenderProj
 	ctx.lineWidth = 4;
 	ctx.beginPath();
 	{
-		ctx.shadowBlur = project.selected ? canvas2D.zoomAmount * 200 : 0;
+		ctx.shadowBlur = project.selected ? 200 * Math.max(...[canvas2D.zoomAmount, 1]) : 0;
 		ctx.shadowColor = ctx.strokeStyle = project.renderState.background;
 		ctx.fillStyle = project.renderState.foreground;
 		ctx.rect(project.data.x - boxDimensions.width / 2,
@@ -123,14 +128,12 @@ function drawSpecialProject(ctx: CanvasRenderingContext2D, project: IGraphRender
 	if (height < 2 * radius) radius = height / 2;
 
 	ctx.save()
-	ctx.lineWidth = 5;
+	ctx.lineWidth = 10;
 	ctx.beginPath();
 	{
-		// TODO: Because Idk if intra has its origin in the middle or the top left corner
-		// We need to either offset this witht he box width / 2 and height / 2.
-		// If intra does not center its origin we need to just alter the intersection.
-		ctx.shadowBlur = project.selected ? canvas2D.zoomAmount * 200 : 0;
+		ctx.shadowBlur = project.selected ? 200 * Math.max(...[canvas2D.zoomAmount, 1]) : 0;
 		ctx.shadowColor = ctx.strokeStyle = project.renderState.background;
+		ctx.fillStyle = project.renderState.foreground;
 		ctx.moveTo(x + radius, y);
 		ctx.arcTo(x + width, y, x + width, y + height, radius);
 		ctx.arcTo(x + width, y + height, x, y + height, radius);
@@ -143,6 +146,14 @@ function drawSpecialProject(ctx: CanvasRenderingContext2D, project: IGraphRender
 	ctx.restore();
 }
 
+/**
+ * Calculates the text size and position for a project.
+ * 
+ * TODO: Fine tune this function, currently works well with small-medium text but starts to look bad with large text.
+ * 
+ * @param ctx The canvas context to draw on.
+ * @param project The project to draw.
+ */
 function calculateText(ctx: CanvasRenderingContext2D, project: IGraphRenderProject) {
 	let fontSize: number = 20;
 	let width = ProjectSizes[project.data.kind] * 2;
@@ -159,15 +170,22 @@ function calculateText(ctx: CanvasRenderingContext2D, project: IGraphRenderProje
 	}
 
 	while (fontSize > 0) { // Make sure font size cannot be 0 or negative
-		ctx.font = `normal ${fontSize}px Roboto`;
+		ctx.font = `bold ${fontSize}px Roboto`;
 		const bounds = ctx.measureText(project.data.name);
 
-		if (width > bounds.width + 10) // TODO: Create Padding var
+		if (width > bounds.width + 5) // TODO: Create Padding var
 			break;
 		fontSize--;
 	}
 }
 
+/**
+ * Draws the name of a project on the graph, respecting the actual width so
+ * that it doesn't overflow like on the old graph.
+ * 
+ * @param ctx The canvas context to draw on.
+ * @param project The project to draw.
+ */
 function drawProjectName(ctx: CanvasRenderingContext2D, project: IGraphRenderProject) {
 	ctx.save();
 	ctx.beginPath();
@@ -198,19 +216,23 @@ function drawProjects(ctx: CanvasRenderingContext2D, graph: IGraph) {
 /**
  * Draws the lines between projects.
  * @param ctx The canvas context to draw on.
+ * 
+ * @note For any 42 Intra staff, please do not store lines like this in the future.
+ * Its god awful and whoever did this should be ashamed of themselves. Also Ruby on rails sucks.
  */
 function drawProjectLines(ctx: CanvasRenderingContext2D, graph: IGraph) {
 	ctx.save();
-	// NOTE: For any 42 Intra staff, please do not store lines like this in the future. Its awful.
+	ctx.lineWidth = 10;
+	ctx.lineCap = 'round';
 	for (const project of graph.projects) {
 		for (const line of project.data.lines) {
 			ctx.beginPath();
-				ctx.lineWidth = 10;
-				ctx.lineCap = 'round';
+			{
 				ctx.strokeStyle = project.renderState.background;
 				ctx.moveTo(line.source.x, line.source.y);
 				ctx.lineTo(line.target.x, line.target.y);
 				ctx.stroke();
+			}
 			ctx.closePath();
 		}
 	}
@@ -227,10 +249,12 @@ function drawCoreRanks(ctx: CanvasRenderingContext2D, graph: IGraph) {
 		const state = RankRenderStates[graph.ranks[i]];
 
 		ctx.beginPath();
-		ctx.strokeStyle = state.color
-		ctx.lineWidth = state.width;
-		ctx.arc(0, 0, radius, Math.PI * 2, 0);
-		ctx.stroke();
+		{
+			ctx.strokeStyle = state.color
+			ctx.lineWidth = state.width;
+			ctx.arc(0, 0, radius, Math.PI * 2, 0);
+			ctx.stroke();
+		}
 		ctx.closePath();
 	}
 	ctx.restore();
@@ -287,9 +311,9 @@ function initGraph(graphData: any) {
 	}
 
 	canvas2D.render((ctx) => {
+		drawProjectLines(ctx, graph);
 		if (graph.ranks.length > 0)
 			drawCoreRanks(ctx, graph);
-		drawProjectLines(ctx, graph);
 		drawProjects(ctx, graph);
 	});
 }
@@ -308,7 +332,8 @@ function initGraph(graphData: any) {
 // });
 
 window.addEventListener("resize", () => {
-	canvas2D.setViewPosition({x: 0, y: 0});
+	// TODO: Leave in as option ?
+	// canvas2D.setViewPosition({ x: 0, y: 0 });
 	canvas2D.setDimensions(canvasParent.clientWidth, canvasParent.clientHeight);
 });
 
@@ -345,11 +370,16 @@ canvas2D.canvas.addEventListener("mouseup", (e) => {
 	const description = document.getElementById("description") as HTMLDivElement;
 	const requirements = document.getElementById("requirements") as HTMLDivElement;
 
-	// TODO: Cleaner ?
-	(header.children[0] as HTMLAnchorElement).innerText = selectedProject.data.name;
-	(header.children[0] as HTMLAnchorElement).setAttribute("href", selectedProject.data.url);
-	(header.children[1] as HTMLSpanElement).innerText = selectedProject.renderState.displayText;
-	(header.children[1] as HTMLSpanElement).setAttribute("data-project-state", selectedProject.data.state);
+	const Anchor = header.children[0] as HTMLAnchorElement;
+	const Span = header.children[1] as HTMLSpanElement;
+
+	// Set anchor link
+	Anchor.innerText = selectedProject.data.name;
+	Anchor.setAttribute("href", selectedProject.data.url);
+
+	// Set project name & state
+	Span.innerText = selectedProject.renderState.displayText;
+	Span.setAttribute("data-project-state", selectedProject.data.state);
 
 	time.innerText = selectedProject.data.duration;
 	description.innerText = selectedProject.data.description;
