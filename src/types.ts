@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:31:56 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/14 17:51:00 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2023/01/11 14:15:26 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ const ProjectSizes: { [key: string] : number; } = {
 	"rush":					8,
 	"piscine":				80,
 	"project":				50,
-	"module":				25,
-	"final_module":			30,
+	"module":				30,
+	"final_module":			50,
 };
 
 const ProjectRenderStates = {

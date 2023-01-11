@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:37:48 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/14 19:12:31 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2023/01/11 15:31:16 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Canvas2D {
 	private isDragging: boolean = false;
 	private dragPosition = { x: 0, y: 0 };
 	private frameID: number | null = null;
+	private canvasScale = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? 1 : 2;
 	
 	//= Constructor =//
 
@@ -47,11 +48,11 @@ class Canvas2D {
 		if (!context) throw new Error("Failed to create context")
 		this.ctx = context;
 
-		this.canvas.width = width;
-		this.canvas.height = height;
 		this.ctx.lineCap = "round";
 		this.ctx.imageSmoothingEnabled = true;
 		this.ctx.imageSmoothingQuality = "high";
+		this.canvas.width = width * this.canvasScale;
+		this.canvas.height = height * this.canvasScale;
 
 		// Start in the middle
 		this.transformedPos = new DOMPoint(this.canvas.width / 2, this.canvas.height / 2);
@@ -111,7 +112,7 @@ class Canvas2D {
 
 			this.ctx.save();
 			this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			this.ctx.clearRect(0, 0, this.canvas.width * this.canvasScale, this.canvas.height * this.canvasScale);
 			this.ctx.restore();
 
 			renderFunc.call(this, this.ctx);
@@ -124,7 +125,7 @@ class Canvas2D {
 	public stopRender(): void {
 		this.ctx.save();
 		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		this.ctx.clearRect(0, 0, this.canvas.width * this.canvasScale, this.canvas.height * this.canvasScale);
 		this.ctx.restore();
 		if (this.frameID != null)
 			cancelAnimationFrame(this.frameID);
@@ -141,7 +142,7 @@ class Canvas2D {
 	 * @returns The transformed coordinate position.
 	 */
 	public getTransformedPoint(point: { x: number, y: number }): DOMPoint {
-		return this.ctx.getTransform().invertSelf().transformPoint(new DOMPoint(point.x, point.y));
+		return this.ctx.getTransform().invertSelf().transformPoint(new DOMPoint(point.x * this.canvasScale, point.y * this.canvasScale));
 	}
 
 	/**
@@ -150,8 +151,8 @@ class Canvas2D {
 	 */
 	public setDimensions(width: number, height: number): void {
 		const temp = this.ctx.getTransform();
-		this.canvas.width = width;
-		this.canvas.height = height;
+		this.canvas.width = width * this.canvasScale;
+		this.canvas.height = height * this.canvasScale;
 		this.ctx.setTransform(temp);
 	}
 
@@ -161,7 +162,7 @@ class Canvas2D {
 	 */
 	public setViewPosition(pos: { x: number, y: number }): void {
 		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-		this.transformedPos = new DOMPoint((this.canvas.width / 2) - pos.x, (this.canvas.height / 2) - pos.y);
+		this.transformedPos = new DOMPoint(((this.canvas.width) / 2) - pos.x, ((this.canvas.height) / 2) - pos.y);
 		this.ctx.translate(this.transformedPos.x, this.transformedPos.y);
 	}
 }
