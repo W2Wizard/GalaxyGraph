@@ -6,7 +6,7 @@
 /*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/12/12 13:35:28 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/12/14 18:57:14 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2023/01/11 13:52:01 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,8 @@
 // Globals
 /* ************************************************************************** */
 
-const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-
 /* Graph config */
 let graph: IGraph = { ranks: [], projects: [] };
-const canvasScale = isFirefox ? 1 : 2; // The upscaling of the canvas, higher is more resolution.
 const canvas = document.getElementById('galaxy-graph') as HTMLCanvasElement;
 const canvasParent = canvas.parentElement as HTMLElement;
 const canvas2D = new Canvas2D(canvas, canvasParent.clientWidth, canvasParent.clientHeight);
@@ -60,12 +57,6 @@ function isPointIntersectingProject(x: number, y: number, project: IGraphRenderP
 
 // Render functions
 /* ************************************************************************** */
-
-// Write a function that returns the appropriate blur amount based on the zoom level from the canvas.
-
-
-function getAppropriateBlur(canvas: Canvas2D) {
-}
 
 /**
  * Draws a circle project on the graph.
@@ -157,6 +148,7 @@ function drawSpecialProject(ctx: CanvasRenderingContext2D, project: IGraphRender
 function calculateText(ctx: CanvasRenderingContext2D, project: IGraphRenderProject) {
 	let fontSize: number = 20;
 	let width = ProjectSizes[project.data.kind] * 2;
+	const textPadding: number = 7;
 
 	// Overwrite width for special cases
 	switch (project.data.kind) {
@@ -173,7 +165,7 @@ function calculateText(ctx: CanvasRenderingContext2D, project: IGraphRenderProje
 		ctx.font = `bold ${fontSize}px Roboto`;
 		const bounds = ctx.measureText(project.data.name);
 
-		if (width > bounds.width + 5) // TODO: Create Padding var
+		if (width > bounds.width + textPadding)
 			break;
 		fontSize--;
 	}
@@ -284,17 +276,8 @@ function initGraph(graphData: any) {
 
 	// TODO: Clear datalist.
 
-	for (const project of graphData.projects as IGraphProject[]) {
-		// HACK: Since IntraAPI V2 does not specifiy this kind ...
-		const name = project.name.toLowerCase();
-		if (name.includes("module")) { // TODO: Check for more somehow ?
-			project.kind = "module";
-
-			// Nor does it have a kind for a final module ... bravo!
-			if (name.endsWith("08"))
-				project.kind = "final_module";
-			continue;
-		}
+	graphData.projects.forEach(element => {
+		let project: IGraphProject = element;
 
 		// Add to renderque
 		graph.projects.push({
@@ -303,12 +286,12 @@ function initGraph(graphData: any) {
 			renderState: ProjectRenderStates[project.state],
 			render: getRenderFunction(project),
 		});
-
+	
 		// Add to datalist.
 		let option = document.createElement('option');
 		option.value = project.name;
 		projectDatalist.appendChild(option);
-	}
+	});
 
 	canvas2D.render((ctx) => {
 		drawProjectLines(ctx, graph);
