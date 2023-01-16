@@ -3,40 +3,163 @@
 /*                                                        ::::::::            */
 /*   main.css                                           :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: lde-la-h <lde-la-h@student.codam.nl>         +#+                     */
+/*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/06/30 17:18:17 by lde-la-h      #+#    #+#                 */
-/*   Updated: 2022/08/26 13:35:47 by W2Wizard      ########   odam.nl         */
+/*   Updated: 2022/12/14 18:28:26 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
+:root {
+	--text-color: #f2f2ff
+}
+
 body {
-	font-family: 'Segoe UI';
-	background: #2a2a36;
-	min-width: 600px;
-	margin: 8px;
+	margin: 0;
+	height: 100vh;
 	overflow: hidden;
+	font-family: sans-serif;
 }
 
-#galaxy-graph {
+canvas {
 	width: 100%;
-	display: block;
-	border-radius: 8px;
+	height: 100%;
 	background: radial-gradient(ellipse at bottom, #002534 25%, #090a0f 100%);
-	background-size: cover;
-	background-attachment: fixed;
-	position: relative;
+	cursor: default;
+	user-select: none;
 }
 
-#graph-content {
+canvas#galaxy-graph.pointercursor {
+	cursor: pointer;
+}
+
+select, input {
+	flex: 1;
+	padding: 8px;
+	font-size: 1.05em;
+	border-radius: 4px;
+	border: solid 1px #474b54;
+	color: var(--text-color);
+	backdrop-filter: blur(5px);
+	background-color: rgba(6, 19, 28, 0.68);
+}
+
+select {
+	max-width: 120px;
+}
+
+select:disabled, input:disabled {
+	display: none;
+}
+
+/* ************************************************************************** */
+
+.options {
+	display: flex;
 	position: absolute;
-	top: 0px;
-	right: 0px;
-	width: 300px;
-	margin: 1rem;
-	color: #ecf0f1;
-	border: solid 1px gray;
+	gap: 5px;
+	padding: 10px;
+	width: 100%;
+	max-width: 300px;
+}
+
+#graph_description {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+
+	right: 0;
+	backdrop-filter: blur(5px);
+	box-sizing: border-box;
+
+	position: absolute;
+	margin: 10px;
+
+	width: 100%;
+	max-width: 300px;
+	min-height: 100px;
+
+	border: solid 1px #474b54;
+	color: var(--text-color);
+
 	background-color: rgba(6,19,28,0.68);
-    border-radius: 5px;
-    padding: 20px;
+	border-radius: 5px;
+	padding: 20px;
+
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.4s;
+}
+
+#graph_description.active {
+	opacity: 1;
+	pointer-events: initial;
+	transition: opacity 0.1s;
+}
+
+@media (max-width: 992px) {
+	#graph_description {
+		top: 40px;
+		left: 0;
+	}
+}
+
+/* ************************************************************************** */
+
+#graph_description #header {
+	display: flex;
+	justify-content: space-between;
+}
+
+
+#graph_description #header a {
+	text-decoration: none;
+	font-weight: bold;
+	color: #00ecef;
+}
+
+#graph_description #header span {
+	color: var(--text-color);
+	font-size: 0.95em;
+	border-radius: 4px;
+	padding: 5px;
+	text-transform: lowercase;
+}
+
+
+#graph_description #header span[data-project-state="done"] {
+	background-color: #5cb85c;
+}
+
+#graph_description #header span[data-project-state="in_progress"] {
+	background-color: #474b54;
+}
+
+#graph_description #header span[data-project-state="fail"] {
+	background-color: #d8636f;
+}
+
+#graph_description #header span[data-project-state="available"] {
+	color: #090a0f;
+	background-color: #fff;
+}
+
+#graph_description #header span[data-project-state="unavailable"] {
+	background-color: #373c48;
+}
+
+#graph_description #header span[data-project-state="not_recommended"] {
+	background-color: #df9539;
+}
+
+#graph_description #time {
+
+}
+
+#graph_description #description {
+	color: #909090;
+}
+
+#graph_description #requirements {
+
 }

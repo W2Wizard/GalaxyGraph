@@ -3,121 +3,166 @@
 /*                                                        ::::::::            */
 /*   canvas2D.ts                                        :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: W2Wizard <w2.wizzard@gmail.com>              +#+                     */
+/*   By: W2Wizard <main@w2wizard.dev>                 +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/07/05 22:15:08 by W2Wizard      #+#    #+#                 */
-/*   Updated: 2022/07/06 11:50:07 by lde-la-h      ########   odam.nl         */
+/*   Created: 2022/12/12 13:37:48 by lde-la-h      #+#    #+#                 */
+/*   Updated: 2023/01/11 15:31:16 by W2Wizard      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-// Apparently doing pan and zooming is a massive pain in the ass ...
-// This was the only good source I found which used the deprecated SVGMatrix.
-// See: http://phrogz.net/tmp/canvas_zoom_to_cursor.html
-
-////////////////////////////////////////////////////////////////////////////////
-// Functions
-////////////////////////////////////////////////////////////////////////////////
-
-function clamp(num: number, min: number, max: number) {
-	return Math.min(Math.max(num, min), max);
-}
-
 /**
- * Inject overwritten functions to the canvas context.
- * @param ctx The context object.
+ * 2D Canvas implementation for pan, zoom and other controls.
+ * @Reference https://bit.ly/3Dy0er8
+ * @Reference https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setTransform
  */
-function injectTransOverrides(ctx: CanvasRenderingContext2D) {
+class Canvas2D {
 
-	const savedTransforms = [];
-	let matrix = new DOMMatrix();
+	//= Properties =//
 
-	ctx.getTransform = () => { return matrix; };
+	/** Reference to the canvas element. */
+	public canvas: HTMLCanvasElement;
+	/** The rendering context. */
+	public ctx: CanvasRenderingContext2D;
+	/** The current transformed mouse pos */
+	public transformedPos: DOMPoint;
+	/** The current amount of zoom. */
+	public zoomAmount: number = 0;
 
-	const save = ctx.save;
-	ctx.save = function () {
-		savedTransforms.push(matrix.translate(0, 0));
-		return save.call(ctx);
-	};
+	private isDragging: boolean = false;
+	private dragPosition = { x: 0, y: 0 };
+	private frameID: number | null = null;
+	private canvasScale = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? 1 : 2;
+	
+	//= Constructor =//
 
-	const restore = ctx.restore;
-	ctx.restore = function () {
-		matrix = savedTransforms.pop();
-		return restore.call(ctx);
-	};
+	/**
+	 * Initializes a new Canvas2D object.
+	 * @param inCanvas The canvas HTML element to user for rendering.
+	 * @param width The desired width of the canvas.
+	 * @param height The desired height of the canvas
+	 */
+	constructor(inCanvas: HTMLCanvasElement, width: number, height: number) {
 
-	const scale = ctx.scale;
-	ctx.scale = function (sx, sy) {
-		matrix = matrix.scale(sx, sy);
-		return scale.call(ctx, sx, sy);
-	};
+		this.canvas = inCanvas;
+		const context = this.canvas.getContext('2d');
+		if (!context) throw new Error("Failed to create context")
+		this.ctx = context;
 
-	const rotate = ctx.rotate;
-	ctx.rotate = function (radians) {
-		matrix = matrix.rotate(radians * 180 / Math.PI);
-		return rotate.call(ctx, radians);
-	};
+		this.ctx.lineCap = "round";
+		this.ctx.imageSmoothingEnabled = true;
+		this.ctx.imageSmoothingQuality = "high";
+		this.canvas.width = width * this.canvasScale;
+		this.canvas.height = height * this.canvasScale;
 
-	const translate = ctx.translate;
-	ctx.translate = function (dx, dy) {
-		matrix = matrix.translate(dx, dy);
-		return translate.call(ctx, dx, dy);
-	};
+		// Start in the middle
+		this.transformedPos = new DOMPoint(this.canvas.width / 2, this.canvas.height / 2);
+		this.ctx.translate(this.transformedPos.x, this.transformedPos.y);
+	
+		//= Mouse events =//
 
-	const transform = ctx.transform;
-	ctx.transform = function (a, b, c, d, e, f) {
-		const m2 = new DOMMatrix();
-		m2.a = a; m2.b = b; m2.c = c; m2.d = d; m2.e = e; m2.f = f;
-		matrix = matrix.multiply(m2);
-		return transform.call(ctx, a, b, c, d, e, f);
-	};
+		this.canvas.addEventListener("mouseleave", (e: MouseEvent) => {
+			this.isDragging = false;
+		});
 
-	const setTransform = ctx.setTransform;
-	(ctx as any).setTransform = function (a, b, c, d, e, f) {
-		matrix.a = a; matrix.b = b; matrix.c = c; matrix.d = d; matrix.e = e; matrix.f = f;
-		return (setTransform as any).call(ctx, a, b, c, d, e, f);
-	};
+		this.canvas.addEventListener("mousedown", (e: MouseEvent) => {
+			this.isDragging = true;
+			this.dragPosition = this.getTransformedPoint({ x: e.offsetX, y: e.offsetY });
+		});
 
-	(ctx as any).getScale = function () {
-		return {
-			scaleX: Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b),
-			scaleY: Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d)
-		};
+		this.canvas.addEventListener("mouseup", (e: MouseEvent) => {
+			this.isDragging = false;
+		});
+
+		this.canvas.addEventListener("mousemove", (e: MouseEvent) => {
+			this.transformedPos = this.getTransformedPoint({ x: e.offsetX, y: e.offsetY })
+
+			if (this.isDragging)
+				this.ctx.translate(this.transformedPos.x - this.dragPosition.x, this.transformedPos.y - this.dragPosition.y);
+		});
+
+		this.canvas.addEventListener("mouseup", (e: MouseEvent) => {
+			this.transformedPos = this.getTransformedPoint({ x: e.offsetX, y: e.offsetY })
+		});
+
+		this.canvas.addEventListener("wheel", (e: WheelEvent) => {
+			e.preventDefault();
+			
+			let zoom = e.deltaY < 0 ? 1.1 : 0.9;
+			
+			// Either A or D component will work, since scaling is uniform.
+			this.zoomAmount = this.ctx.getTransform().a;
+			if (this.zoomAmount < 0.1 && zoom < 1) return;
+			if (this.zoomAmount > 10 && zoom > 1) return;
+
+			this.ctx.translate(this.transformedPos.x, this.transformedPos.y);
+			this.ctx.scale(zoom, zoom);
+			this.ctx.translate(-this.transformedPos.x, -this.transformedPos.y);
+		});
 	}
 
-	const pt = new DOMPoint();
-	(ctx as any).transformPoint = function (x, y): DOMPoint {
-		pt.x = x;
-		pt.y = y;
-		return pt.matrixTransform(matrix.inverse());
+	//= Methods =//
+
+	/**
+	 * Function that starts to render to graph onto the canvas.
+	 * @param renderFunc The function callback to render your content with.
+	 */
+	public render(renderFunc: (ctx: CanvasRenderingContext2D) => void): void {
+		const animate = () => {
+			if (!this.canvas && this.frameID != null) return cancelAnimationFrame(this.frameID);
+
+			this.ctx.save();
+			this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+			this.ctx.clearRect(0, 0, this.canvas.width * this.canvasScale, this.canvas.height * this.canvasScale);
+			this.ctx.restore();
+
+			renderFunc.call(this, this.ctx);
+			this.frameID = requestAnimationFrame(animate);
+		}
+		animate();
 	}
-}
 
-function setCanvasTranslationOffsets(x: number, y: number) {
-	const trans = ctx.getTransform();
-	trans.m41 = x;
-	trans.m42 = y;
-	ctx.setTransform(trans.a, trans.b, trans.c, trans.d, trans.e, trans.f);
-}
+	/** Stops the rendering, clears the canvas as well. */
+	public stopRender(): void {
+		this.ctx.save();
+		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+		this.ctx.clearRect(0, 0, this.canvas.width * this.canvasScale, this.canvas.height * this.canvasScale);
+		this.ctx.restore();
+		if (this.frameID != null)
+			cancelAnimationFrame(this.frameID);
+	}
 
-function getCanvasTranslationOffsets() {
-	const trans = ctx.getTransform();
+	/**
+	 * Converts a given x, y coordinate into a transformed canvas coordinate.
+	 * 
+	 * For instance you might want to set the 'camera' position to be on a certain
+	 * object specified on X, Y untis. This function converts those coordinates into
+	 * the actual transform required to translate to that given point.
+	 * 
+	 * @param point The X & Y coordinate to convert.
+	 * @returns The transformed coordinate position.
+	 */
+	public getTransformedPoint(point: { x: number, y: number }): DOMPoint {
+		return this.ctx.getTransform().invertSelf().transformPoint(new DOMPoint(point.x * this.canvasScale, point.y * this.canvasScale));
+	}
 
-	return { x: trans.m41, y: trans.m42 };
-}
+	/**
+	 * Sets the canvas dimensions / width & height. Preserves the matrix while doing so.
+	 * @param dimensions The desired dimensions to scale the canvas to.
+	 */
+	public setDimensions(width: number, height: number): void {
+		const temp = this.ctx.getTransform();
+		this.canvas.width = width * this.canvasScale;
+		this.canvas.height = height * this.canvasScale;
+		this.ctx.setTransform(temp);
+	}
 
-////////////////////////////////////////////////////////////////////////////////
-// Intersections
-////////////////////////////////////////////////////////////////////////////////
-
-function isInsideCircle(x: number, y: number, cx: number, cy: number, rad: number) {
-	return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= rad * rad;
-}
-
-function isInsideRectangle(x: number, y: number, rx: number, ry: number, width: number, height: number,) {
-	const x1 = rx - width / 2;
-	const y1 = ry - height / 2;
-
-	if (x < x1 || y < y1 || x > x1 + width || y > y1 + height)
-		return false;
-	return true;
+	/**
+	 * Sets the view position onto a given coordinate.
+	 * @param pos The position to move to.
+	 */
+	public setViewPosition(pos: { x: number, y: number }): void {
+		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+		this.transformedPos = new DOMPoint(((this.canvas.width) / 2) - pos.x, ((this.canvas.height) / 2) - pos.y);
+		this.ctx.translate(this.transformedPos.x, this.transformedPos.y);
+	}
 }
